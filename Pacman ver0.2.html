@@ -19,16 +19,17 @@ ctx.fillStyle="#FF0000";//形状内の色
 x_zahyo = 100;
 y_zahyo = 100;
 
-//パックマンの向き, 動き,口の動き
-var direction;
-var mouthangle = 0;
-var mouthdirection=0;
-var move_x = 0;
-var move_y = 0;
+//パックマンの向き,半径, 動き,口の動き
 const UP = 0;
 const DOWN = 1;
 const RIGHT = 2;
 const LEFT = 3;
+const p_radius = 50
+var direction = DOWN;
+var mouthangle = 0;
+var mouthdirection=0;
+var move_x = 0;
+var move_y = 0;
 
 var cv2 = document.getElementById("something");
 var ctx2 = cv.getContext("2d");
@@ -36,7 +37,6 @@ ctx2.strokeStyle="#FFFFFF";//輪郭の色
 ctx2.fillStyle="#FFF000";//形状内の色
 
 	function start() {
-	direction = DOWN;
 	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
 	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
 	timerID_2 = setInterval ('reDraw()', 5);
@@ -49,6 +49,7 @@ ctx2.fillStyle="#FFF000";//形状内の色
 	function reDraw(){
 		//clearRect(): 指定範囲内を透明にする
 		ctx.clearRect (0 , 0 , 1200 ,300 );
+		collisionDetection(x_zahyo, y_zahyo);
 		drawPacman(ctx, x_zahyo+=move_x, y_zahyo+=move_y,mouthangle);
 		drawSomething(ctx2,200,200);
 	}
@@ -59,42 +60,42 @@ ctx2.fillStyle="#FFF000";//形状内の色
 		switch (direction) {
 			case RIGHT:				
 				ctx.beginPath();//現在のパスをリセット
-				ctx.arc(cx,cy,50,(30-angle) * Math.PI / 180,(330+angle) * Math.PI / 180);
+				ctx.arc(cx,cy,p_radius,(30-angle) * Math.PI / 180,(330+angle) * Math.PI / 180);
 				ctx.moveTo(cx,cy);
-				ctx.lineTo(cx + 50 * Math.cos((30-angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((30-angle) * Math.PI/ 180));
-				ctx.lineTo(cx + 50 * Math.cos((330+angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((330+angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((30-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((30-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((330+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((330+angle) * Math.PI/ 180));
 				ctx.fill();
 				break;
 			case LEFT:
 				ctx.beginPath();
-				ctx.arc(cx,cy,50,(210-angle) * Math.PI / 180,(150+angle) * Math.PI / 180);
+				ctx.arc(cx,cy,p_radius,(210-angle) * Math.PI / 180,(510+angle) * Math.PI / 180);
 				ctx.moveTo(cx,cy);
-				ctx.lineTo(cx + 50 * Math.cos((210-angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((210-angle) * Math.PI/ 180));
-				ctx.lineTo(cx + 50 * Math.cos((150+angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((150+angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((210-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((210-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((510+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((510+angle) * Math.PI/ 180));
 				ctx.fill();
 				break;
 			case UP:
 				ctx.beginPath();
-				ctx.arc(cx,cy,50,(300-angle) * Math.PI / 180,(240+angle) * Math.PI / 180);
+				ctx.arc(cx,cy,p_radius,(300-angle) * Math.PI / 180,(600+angle) * Math.PI / 180);
 				ctx.moveTo(cx,cy);
-				ctx.lineTo(cx + 50 * Math.cos((300-angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((300-angle) * Math.PI/ 180));
-				ctx.lineTo(cx + 50 * Math.cos((240+angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((240+angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((300-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((300-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((600+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((600+angle) * Math.PI/ 180));
 				ctx.fill();
 				break;
 			case DOWN:
 				ctx.beginPath();
-				ctx.arc(cx,cy,50,(120-angle) * Math.PI / 180,(60+angle) * Math.PI / 180);
+				ctx.arc(cx,cy,p_radius,(120-angle) * Math.PI / 180,(420+angle) * Math.PI / 180);
 				ctx.moveTo(cx,cy);
-				ctx.lineTo(cx + 50 * Math.cos((120-angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((120-angle) * Math.PI/ 180));
-				ctx.lineTo(cx + 50 * Math.cos((60+angle) * Math.PI/ 180),
-						   cy + 50 * Math.sin((60+angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((120-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((120-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((420+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((420+angle) * Math.PI/ 180));
 				ctx.fill();
 				break;
 		}
@@ -102,30 +103,26 @@ ctx2.fillStyle="#FFF000";//形状内の色
 	}
 	
 	//パックマンの口の角度を変化させる関数
-	function checkPacmanMouthMove(){;
+	function checkPacmanMouthMove(){
+		switch (mouthangle){
+			case 0:
+				mouthdirection = 0;
+				break;
+			case 30:
+				mouthdirection = 1;
+				break;
+			default:
+				break;
+		}
 		switch (mouthdirection){
 			case 0:
 				mouthangle++;
-				if(mouthangle==30) mouthdirection = 1;
 				break;
 			case 1:
 				mouthangle--;
-				if(mouthangle==0) mouthdirection = 0;
 				break;
 		}
 	}
-	
-	//食べ物の画像なりを入れる所
-	function drawSomething(ctx,cx,cy){
-		ctx.beginPath();
-		ctx.arc(cx,cy,50,10 * Math.PI / 180,350 * Math.PI / 180);
-		ctx.moveTo(cx,cy);
-		ctx.lineTo(cx + 50 * Math.cos(10 * Math.PI/ 180),
-				   cy + 50 * Math.sin(10 * Math.PI/ 180));
-		ctx.lineTo(cx + 50 * Math.cos(350 * Math.PI/ 180),
-				   cy + 50 * Math.sin(350 * Math.PI/ 180));
-		ctx.fill();
-		}
 	
 	function keydownfunc (event) {
 	//どのキーが押されたかの情報を取得する
@@ -155,10 +152,42 @@ ctx2.fillStyle="#FFF000";//形状内の色
 		}
 	}
 	
-	//あたり判定のメソッド
-	function collisionDetection(mx,my,ax,ay){
+	//あたり判定のメソッド（現時点では端の判定のみ）
+	function collisionDetection(cx, cy){
+		switch(cx){
+		case -1 + p_radius :
+			move_x = 0;
+			x_zahyo = 0 + p_radius;
+			break;
+		case 1201 - p_radius :
+			move_x = 0;
+			x_zahyo = 1200 - p_radius;
+			break;
+		}
+		switch(cy){
+		case -1 + p_radius :
+			move_y = 0;
+			y_zahyo = 0 + p_radius;
+			break;
+		case 301 - p_radius :
+			move_y = 0;
+			y_zahyo = 300 - p_radius;
+			break;
+		}
 	}
 	
+		
+	//食べ物の画像なりを入れる所
+	function drawSomething(ctx,cx,cy){
+		ctx.beginPath();
+		ctx.arc(cx,cy,50,10 * Math.PI / 180,350 * Math.PI / 180);
+		ctx.moveTo(cx,cy);
+		ctx.lineTo(cx + 50 * Math.cos(10 * Math.PI/ 180),
+				   cy + 50 * Math.sin(10 * Math.PI/ 180));
+		ctx.lineTo(cx + 50 * Math.cos(350 * Math.PI/ 180),
+				   cy + 50 * Math.sin(350 * Math.PI/ 180));
+		ctx.fill();
+		}
 </script>
 </head>
 <body onload="start()">
