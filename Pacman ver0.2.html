@@ -1,0 +1,167 @@
+﻿<html>
+<head>
+<meta charset-"utf-8"/>
+
+<!--キャンバス領域-->
+<canvas id="pacman" width="1200" height="300">
+</canvas>
+
+	
+<script type="text/javascript">
+
+//パックマンを描画するための変数及びその座標
+var cv = document.getElementById("pacman");
+var ctx = cv.getContext("2d");
+ctx.strokeStyle="#FF0000";//輪郭の色
+ctx.fillStyle="#FF0000";//形状内の色
+
+//パックマンスタート地点
+x_zahyo = 100;
+y_zahyo = 100;
+
+//パックマンの向き, 動き,口の動き
+var direction;
+var mouthangle = 0;
+var mouthdirection=0;
+var move_x = 0;
+var move_y = 0;
+const UP = 0;
+const DOWN = 1;
+const RIGHT = 2;
+const LEFT = 3;
+
+var cv2 = document.getElementById("something");
+var ctx2 = cv.getContext("2d");
+ctx2.strokeStyle="#FFFFFF";//輪郭の色
+ctx2.fillStyle="#FFF000";//形状内の色
+
+	function start() {
+	direction = DOWN;
+	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
+	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
+	timerID_2 = setInterval ('reDraw()', 5);
+	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
+	//true or false: イベントの優先順位
+	window.addEventListener ('keydown' , keydownfunc , false);
+	}
+	
+	//再描画のメソッド
+	function reDraw(){
+		//clearRect(): 指定範囲内を透明にする
+		ctx.clearRect (0 , 0 , 1200 ,300 );
+		drawPacman(ctx, x_zahyo+=move_x, y_zahyo+=move_y,mouthangle);
+		drawSomething(ctx2,200,200);
+	}
+	
+	//パックマンの形状を表すメソッド
+	//drawPacman(2D, 中心のx座標, 中心のy座標,　口の角度):
+	function drawPacman(ctx,cx,cy,angle){
+		switch (direction) {
+			case RIGHT:				
+				ctx.beginPath();//現在のパスをリセット
+				ctx.arc(cx,cy,50,(30-angle) * Math.PI / 180,(330+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + 50 * Math.cos((30-angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((30-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + 50 * Math.cos((330+angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((330+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case LEFT:
+				ctx.beginPath();
+				ctx.arc(cx,cy,50,(210-angle) * Math.PI / 180,(150+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + 50 * Math.cos((210-angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((210-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + 50 * Math.cos((150+angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((150+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case UP:
+				ctx.beginPath();
+				ctx.arc(cx,cy,50,(300-angle) * Math.PI / 180,(240+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + 50 * Math.cos((300-angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((300-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + 50 * Math.cos((240+angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((240+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case DOWN:
+				ctx.beginPath();
+				ctx.arc(cx,cy,50,(120-angle) * Math.PI / 180,(60+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + 50 * Math.cos((120-angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((120-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + 50 * Math.cos((60+angle) * Math.PI/ 180),
+						   cy + 50 * Math.sin((60+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+		}
+		
+	}
+	
+	//パックマンの口の角度を変化させる関数
+	function checkPacmanMouthMove(){;
+		switch (mouthdirection){
+			case 0:
+				mouthangle++;
+				if(mouthangle==30) mouthdirection = 1;
+				break;
+			case 1:
+				mouthangle--;
+				if(mouthangle==0) mouthdirection = 0;
+				break;
+		}
+	}
+	
+	//食べ物の画像なりを入れる所
+	function drawSomething(ctx,cx,cy){
+		ctx.beginPath();
+		ctx.arc(cx,cy,50,10 * Math.PI / 180,350 * Math.PI / 180);
+		ctx.moveTo(cx,cy);
+		ctx.lineTo(cx + 50 * Math.cos(10 * Math.PI/ 180),
+				   cy + 50 * Math.sin(10 * Math.PI/ 180));
+		ctx.lineTo(cx + 50 * Math.cos(350 * Math.PI/ 180),
+				   cy + 50 * Math.sin(350 * Math.PI/ 180));
+		ctx.fill();
+		}
+	
+	function keydownfunc (event) {
+	//どのキーが押されたかの情報を取得する
+	var code = event.keyCode;
+	//スイッチ文でケースにより処理を変える
+	switch (code) {
+		case 37://←キーが押された場合の番号
+			direction = LEFT;
+			move_x = -1;//x座標を1px減らす（左に動かす）
+			move_y = 0;
+			break;//ここでブレークしないと下のコードが実行されてしまう
+		case 39://→キーが押された場合の番号
+			direction = RIGHT;
+			move_x = 1;//x座標を1px増やす（右に動かす）
+			move_y = 0;
+			break;
+		case 38://↑キーが押された場合の番号
+			direction = UP;
+			move_x = 0;
+			move_y = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 40://↓キーが押された場合の番号
+			direction = DOWN;
+			move_x = 0;
+			move_y = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//あたり判定のメソッド
+	function collisionDetection(mx,my,ax,ay){
+	}
+	
+</script>
+</head>
+<body onload="start()">
+	
+</body>
+</html>
