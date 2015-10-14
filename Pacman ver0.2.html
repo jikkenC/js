@@ -15,21 +15,22 @@ var ctx = cv.getContext("2d");
 ctx.strokeStyle="#FF0000";//輪郭の色
 ctx.fillStyle="#FF0000";//形状内の色
 
-//パックマンスタート地点
+//パックマンスタート地点,向き,半径, 動き,口の動き
 x_zahyo = 100;
 y_zahyo = 100;
-
-//パックマンの向き,半径, 動き,口の動き
 const UP = 0;
 const DOWN = 1;
 const RIGHT = 2;
 const LEFT = 3;
 const p_radius = 50
-var direction = DOWN;
 var mouthangle = 0;
 var mouthdirection=0;
-var move_x = 0;
-var move_y = 0;
+var direction;
+var tmp_direction = DOWN;
+var move_x;
+var move_y;
+var tmp_move_x = 0;
+var tmp_move_y = 0;
 
 var cv2 = document.getElementById("something");
 var ctx2 = cv.getContext("2d");
@@ -50,6 +51,7 @@ ctx2.fillStyle="#FFF000";//形状内の色
 		//clearRect(): 指定範囲内を透明にする
 		ctx.clearRect (0 , 0 , 1200 ,300 );
 		collisionDetection(x_zahyo, y_zahyo);
+		decideMoveDirection();
 		drawPacman(ctx, x_zahyo+=move_x, y_zahyo+=move_y,mouthangle);
 		drawSomething(ctx2,200,200);
 	}
@@ -130,25 +132,33 @@ ctx2.fillStyle="#FFF000";//形状内の色
 	//スイッチ文でケースにより処理を変える
 	switch (code) {
 		case 37://←キーが押された場合の番号
-			direction = LEFT;
-			move_x = -1;//x座標を1px減らす（左に動かす）
-			move_y = 0;
+			tmp_direction = LEFT;
+			tmp_move_x = -1;//x座標を1px減らす（左に動かす）
+			tmp_move_y = 0;
 			break;//ここでブレークしないと下のコードが実行されてしまう
 		case 39://→キーが押された場合の番号
-			direction = RIGHT;
-			move_x = 1;//x座標を1px増やす（右に動かす）
-			move_y = 0;
+			tmp_direction = RIGHT;
+			tmp_move_x = 1;//x座標を1px増やす（右に動かす）
+			tmp_move_y = 0;
 			break;
 		case 38://↑キーが押された場合の番号
-			direction = UP;
-			move_x = 0;
-			move_y = -1;//y座標を1px減らす（上に動かす）
+			tmp_direction = UP;
+			tmp_move_x = 0;
+			tmp_move_y = -1;//y座標を1px減らす（上に動かす）
 			break;
 		case 40://↓キーが押された場合の番号
-			direction = DOWN;
-			move_x = 0;
-			move_y = 1;//y座標を1px増やす（下に動かす）
+			tmp_direction = DOWN;
+			tmp_move_x = 0;
+			tmp_move_y = 1;//y座標を1px増やす（下に動かす）
 			break;
+		}
+	}
+	
+	function decideMoveDirection(){
+		if(x_zahyo % 50 == 0 && y_zahyo % 50 == 0){
+			direction = tmp_direction;
+			move_x = tmp_move_x;
+			move_y = tmp_move_y;
 		}
 	}
 	
