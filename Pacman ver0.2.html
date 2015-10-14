@@ -126,6 +126,7 @@ ctx2.fillStyle="#FFF000";//形状内の色
 		}
 	}
 	
+	//移動方向の予約
 	function keydownfunc (event) {
 	//どのキーが押されたかの情報を取得する
 	var code = event.keyCode;
@@ -154,6 +155,7 @@ ctx2.fillStyle="#FFF000";//形状内の色
 		}
 	}
 	
+	//移動方向の決定
 	function decideMoveDirection(){
 		if(x_zahyo % 50 == 0 && y_zahyo % 50 == 0){
 			direction = tmp_direction;
