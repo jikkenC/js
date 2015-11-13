@@ -3,21 +3,36 @@
 <meta charset-"utf-8"/>
 
 <!--キャンバス領域-->
-<canvas id="pacman" width="1200" height="300">
+<canvas id="pacman" width="800" height="800">
 </canvas>
 
 	
 <script type="text/javascript">
 
 //マス目の設定
-var chunkx = new Array(64);
-var chunky = new Array(64);
+var chunk = new Array(64);
+var chunk_x = new Array(64);
+var chunk_y = new Array(64);
 for(var x=0; x<8; x++){
 	for(var y=0; y<8; y++){
-	chunkx[x+8*y]=100*x+50;
-	chunky[x+8*y]=100*y+50;
+	chunk_x[x+8*y]=100*x+50;
+	chunk_y[x+8*y]=100*y+50;
 	}
 }
+chunk = [ 0,0,0,0,0,0,0,0,
+          0,1,1,1,1,1,1,0,
+          0,1,1,1,1,1,1,0,
+          0,1,1,1,1,1,1,0,
+          0,1,1,1,1,1,1,0,
+          0,1,1,1,1,1,1,0,
+          0,1,1,1,1,1,1,0,
+          0,0,0,0,0,0,0,0 ]
+          
+//定数
+const UP = 0;
+const DOWN = 1;
+const RIGHT = 2;
+const LEFT = 3;
 
 //パックマンを描画するための変数及びその座標
 var cv = document.getElementById("pacman");
@@ -26,12 +41,9 @@ ctx.strokeStyle="#FF0000";//輪郭の色
 ctx.fillStyle="#FF0000";//形状内の色
 
 //パックマンスタート地点,向き,半径, 動き,口の動き
-x_zahyo = 100;
-y_zahyo = 100;
-const UP = 0;
-const DOWN = 1;
-const RIGHT = 2;
-const LEFT = 3;
+pac_chunk = 9;
+pac_x = 100;
+pac_y = 100;
 const p_radius = 50
 var mouthangle = 0;
 var mouthdirection=0;
@@ -59,10 +71,9 @@ ctx2.fillStyle="#FFF000";//形状内の色
 	//再描画のメソッド
 	function reDraw(){
 		//clearRect(): 指定範囲内を透明にする
-		ctx.clearRect (0 , 0 , 1200 ,300 );
-		collisionDetection(x_zahyo, y_zahyo);
-		decideMoveDirection();
-		drawPacman(ctx, x_zahyo+=move_x, y_zahyo+=move_y,mouthangle);
+		ctx.clearRect (0 , 0 , 800 ,800 );
+		decideMoving();
+		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
 		drawSomething(ctx2,200,200);
 	}
 	
@@ -166,38 +177,50 @@ ctx2.fillStyle="#FFF000";//形状内の色
 	}
 	
 	//移動方向の決定
-	function decideMoveDirection(){
-		if(x_zahyo % 50 == 0 && y_zahyo % 50 == 0){
+	function decideMoving(){
+		if(pac_x % 100 == 0 && pac_y % 100 == 0){
+			collisionDetection(pac_chunk);
 			direction = tmp_direction;
 			move_x = tmp_move_x;
 			move_y = tmp_move_y;
+			setPacChunk(move_x , move_y);
 		}
 	}
 	
-	//あたり判定のメソッド（現時点では端の判定のみ）
-	function collisionDetection(cx, cy){
-		switch(cx){
-		case -1 + p_radius :
-			move_x = 0;
-			x_zahyo = 0 + p_radius;
-			break;
-		case 1201 - p_radius :
-			move_x = 0;
-			x_zahyo = 1200 - p_radius;
-			break;
+	//あたり判定のメソッド
+	function collisionDetection(pac_chunk){
+		if(chunk[pac_chunk+1] == 0 && tmp_direction == RIGHT){
+			tmp_move_x = 0;
 		}
-		switch(cy){
-		case -1 + p_radius :
-			move_y = 0;
-			y_zahyo = 0 + p_radius;
-			break;
-		case 301 - p_radius :
-			move_y = 0;
-			y_zahyo = 300 - p_radius;
-			break;
+		if(chunk[pac_chunk-1] == 0 && tmp_direction == LEFT){
+			tmp_move_x = 0;
+		}
+		if(chunk[pac_chunk+8] == 0 && tmp_direction == DOWN){
+			tmp_move_y = 0;
+		}
+		if(chunk[pac_chunk-8] == 0 && tmp_direction == UP){
+			tmp_move_y = 0;
 		}
 	}
 	
+	function setPacChunk(move_x,move_y){
+		switch(move_x){
+		case 1:
+			pac_chunk=pac_chunk+1;
+			break;
+		case -1:
+			pac_chunk=pac_chunk-1;
+			break;
+		}
+		switch(move_y){
+		case 1:
+			pac_chunk=pac_chunk+8;
+			break;
+		case -1:
+			pac_chunk=pac_chunk-8;
+			break;
+		}
+	}
 		
 	//食べ物の画像なりを入れる所
 	function drawSomething(ctx,cx,cy){
