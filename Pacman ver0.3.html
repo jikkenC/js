@@ -3,7 +3,7 @@
 <meta charset-"utf-8"/>
 
 <!--キャンバス領域-->
-<canvas id="pacman" width="1000" height="700">
+<canvas id="pacman" width="1000" height="800">
 </canvas>
 
 
@@ -14,29 +14,31 @@ const UP = 0;
 const DOWN = 1;
 const RIGHT = 2;
 const LEFT = 3;
-const CHUNK = 18
+const CHUNK_X = 17;
+const CHUNK_Y = 19;
 
 //マス目の設定
-var chunk = new Array(CHUNK*CHUNK);
+var chunk = new Array(CHUNK_X*CHUNK_Y);
 
-chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
+chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+          0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,
+          0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,
+          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+          0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,1,0,
+          0,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,0,
+          0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,
+          0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,
+          0,1,1,0,1,0,1,0,0,0,1,0,1,0,1,1,0,
+          0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,
+          0,1,1,0,1,0,1,0,0,0,1,0,1,0,1,1,0,
+          0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,
+          0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,
+          0,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,0,
+          0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,1,0,
+          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+          0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,
+          0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
 
 //パックマンを描画するための変数
 var cv = document.getElementById("pacman");
@@ -44,7 +46,7 @@ var ctx = cv.getContext("2d");
 
 //パックマンスタートの諸々
 const p_radius = 20;
-pac_chunk = CHUNK*3+3;	/*CHUNK*x+y　　(x,yは初期座標の配列)*/
+pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
 pac_x = p_radius*2*3;/*初期座標x*/
 pac_y = p_radius*2*3;/*初期座標y*/
 var mouthangle = 0;
@@ -57,6 +59,14 @@ var tmp_move_x = 0;
 var tmp_move_y = 0;
 
 	function start() {
+	
+	//壁の描画
+	for(var i=0;i<CHUNK_X;i++){
+		for(var j=0;j<CHUNK_Y; j++){
+			if(chunk[CHUNK_X*j+i] == 0) drawWall(ctx,i*p_radius*2,j*p_radius*2);
+		}
+	}
+	
 	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
 	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
 	timerID_2 = setInterval ('reDraw()', 5);
@@ -68,10 +78,17 @@ var tmp_move_y = 0;
 	//再描画のメソッド
 	function reDraw(){
 		//clearRect(): 指定範囲内を透明にする
-		ctx.clearRect (0 , 0 , 1000 ,700 );
+		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
 	}
+	
+		//壁の描画関数
+	function drawWall(ctx,chunk_x,chunk_y){
+		ctx.fillStyle="#000000";//図形の色
+		ctx.fillRect(chunk_x - p_radius ,chunk_y - p_radius,p_radius*2,p_radius*2); 
+	}
+	
 	
 	//パックマンの形状を表すメソッド
 	//drawPacman(2D, 中心のx座標, 中心のy座標,　口の角度):
@@ -121,6 +138,7 @@ var tmp_move_y = 0;
 		}
 		
 	}
+	
 	
 	//パックマンの口の角度を変化させる関数
 	function checkPacmanMouthMove(){
@@ -192,10 +210,10 @@ var tmp_move_y = 0;
 		if(chunk[pac_chunk-1] == 0 && tmp_direction == LEFT){
 			tmp_move_x = 0;
 		}
-		if(chunk[pac_chunk+CHUNK] == 0 && tmp_direction == DOWN){
+		if(chunk[pac_chunk+CHUNK_X] == 0 && tmp_direction == DOWN){
 			tmp_move_y = 0;
 		}
-		if(chunk[pac_chunk-CHUNK] == 0 && tmp_direction == UP){
+		if(chunk[pac_chunk-CHUNK_X] == 0 && tmp_direction == UP){
 			tmp_move_y = 0;
 		}
 	}
@@ -212,10 +230,10 @@ var tmp_move_y = 0;
 		}
 		switch(move_y){
 		case 1:
-			pac_chunk=pac_chunk+CHUNK;
+			pac_chunk=pac_chunk+CHUNK_X;
 			break;
 		case -1:
-			pac_chunk=pac_chunk-CHUNK;
+			pac_chunk=pac_chunk-CHUNK_X;
 			break;
 		}
 	}
