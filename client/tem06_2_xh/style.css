@@ -1,0 +1,309 @@
+/*--------------------------------------------------------------
+Copyright WEB MAGIC.
+http://www.webamgic.jp/
+---------------------------------------------------------------*/
+
+
+body {
+text-align: center;
+background-color:#FFFFFF;/*全体の背景色-----------------*/
+font-family: Osaka,Verdana,Arial,Helvetica,sans-serif;
+font-size:12px;/*基本の文字サイズ-----------------*/
+line-height:170%;
+color:#444444;;/*基本の文字色-----------------*/
+margin-top:20px;/*コンテンツボックスを上から少し離しています-----------------*/
+margin-bottom:20px;
+margin-left:0;
+margin-right:0;
+}
+
+
+
+/*テキストリンクの色*/
+a:link    {text-decoration:underline;color:#5a89eb;} 
+
+/*訪問済みのリンクの色*/ 
+a:visited {text-decoration:underline;color:#5a89eb;}  
+
+/*クリック時のリンクの色*/
+a:active  {text-decoration:underline;color:#5a89eb;}  
+
+/*マウスの上にカーソルがあるときのリンクの色*/
+a:hover   {text-decoration:underline;color:#5a89eb;}  
+
+
+
+ /*サイトタイトルテキストリンクの色*/
+h1 a:link     {color:#FFFFFF;text-decoration:none;} 
+
+/*左メニュー・訪問済みのリンクの色*/
+h1 a:visited  {color:#FFFFFF;text-decoration:none;}  
+
+/*左メニュー・クリック時のリンクの色*/ 
+h1 a:active   {color:#FFFFFF;text-decoration:underline;}
+
+/*左メニュー・マウスの上にカーソルがあるときのリンクの色*/  
+h1 a:hover    {color:#FFFFFF;text-decoration:underline;}  
+
+
+
+
+
+h1,h2,h3 {
+margin:0px;
+padding:0px;
+font-weight:normal;
+}
+
+
+/*pタグ空白消去*/
+p {
+margin:0px;
+padding:0px;
+}
+
+
+/*IMGボーダー非表示*/
+img  {
+border: none;
+vertical-align:top;
+}
+
+
+
+/*TABLEボーダー非表示*/
+table  {
+border:none;
+}
+
+
+/*IE--BRバグ回避*/
+br  {
+letter-spacing:normal;
+}
+
+/*ビルダー表示崩れ回避*/
+br.clear{
+clear:both;
+padding:0px;
+margin:0px;
+height:0px;
+line-height:0;
+}
+
+
+/*リスト空白消去*/
+ul,ol,li  {
+margin:0px;
+padding:0px;
+list-style:none;
+}
+
+
+ /* メインタイトルのフォントサイズ,色*/
+h1    {
+font-size:26px;       /*タイトル部分文字サイズ-----------------*/
+text-decoration:none;
+line-height:100%;
+font-weight:bold;
+margin-bottom:6px;
+} 
+
+ /* タイトル下の説明文*/
+h2    {
+font-size:12px;     /*文字サイズ-----------------*/
+color:#ffffff;      /*文字の色-----------------*/
+text-decoration:none;
+font-weight:normal;
+margin-bottom:0px;
+line-height:100%;
+} 
+
+
+#container{
+width:868px;
+margin:0 auto;
+padding:3px;
+border:#9d9d9d solid 1px;
+text-align:center;
+}
+
+
+#pagebody{
+clear:both;
+width:868px;
+margin:0 auto;
+padding:0px;
+display:block;
+position:relative;
+}
+
+
+
+#header{
+background-color:#598eb8;   /*ヘッダー背景色　現在は濃いブルー-----------------*/
+padding:25px;
+width:818px;
+text-align:left;
+}
+
+
+
+
+
+
+
+
+/*ヘッダー下ロールオーバーメニューリスト指定------------------------------------------------*/
+
+#menu{
+margin: 0;
+padding: 0;
+}
+
+
+#menu ul{
+list-style-type: none;
+margin: 0;
+padding: 0;
+}
+
+
+/*各メニューのボックス-----------------*/
+#menu li{
+float: left;
+width: 172px;
+margin:2px 2px 2px 0px;
+}
+
+
+
+/*一番右端のメニューボックス右サイドのマージンカット指定-----------------*/
+#menu li.menuright{
+float: left;
+width: 172px;
+margin:2px 0px; 
+}
+
+
+
+/*マウスをのせていないときの指定-----------------*/
+#menu a{
+text-align: center;
+display:block;
+padding:8px;
+width: 156px;
+background-color:#bdcfdd;/*メニューの背景色-----------------*/
+color:#444444;/*メニューの文字色-----------------*/
+text-decoration:none;/*リンクのアンダーラインなし-----------------*/
+}
+
+
+
+/*マウスをのせたときの指定-----------------*/
+#menu a:hover{
+background-color:#9eb9cd;/*メニューの背景色-----------------*/
+color:#444444;/*メニューの文字色-----------------*/
+text-decoration:underline;/*リンクのアンダーラインあり-----------------*/
+}
+
+
+
+
+
+
+
+
+
+
+
+#wrapper{
+clear:both;
+background-color:#ffffff;   /*メインコンテンツ背景色　現在は白-----------------*/
+position:relative;
+float:left;
+width:868px;
+}
+
+
+
+#side_left{
+width:175px;
+}
+
+
+
+#contents{
+width:476px;
+text-align:left;
+margin:20px 20px 20px 20px;
+}
+
+
+
+#side_right{
+width:151px;
+height:100%;
+padding:12px;
+text-align:left;
+}
+
+
+
+#copyright{
+clear:both;
+text-align:center;
+font-size:7pt;
+margin-bottom:25px;
+}
+
+
+#copyright a:link {color:#444444;}
+#copyright a:visited  {color:#444444;}
+#copyright a:hover {color:#444444;}
+#copyright a:active  {color:#444444;}
+
+.side_right_bg{
+background-color:#e7e9ea;   /*右サイド背景色　現在は薄いグレー-----------------*/
+vertical-align:top;
+}
+
+
+.top{
+vertical-align:top;
+}
+
+
+
+
+/*ご案内や新着情報などのバー-----------------*/
+.contents_bar{
+background-color:#b9d0b9;   /*バーの背景色　現在は薄めのグリーン-----------------*/
+text-align:left;
+padding:4px;
+margin-bottom:15px;
+font-size:12px;   /*バーの文字サイズ-----------------*/
+}
+
+
+
+.text{
+margin:0px 4px 30px 4px;
+}
+
+
+
+#news{
+margin:4px;
+}
+
+
+
+
+/*ご案内や新着情報などのバーの頭にある■-----------------*/
+.text_white{
+color:#ffffff;   /*■の色を変えるときはここの指定-----------------*/
+font-family:"ＭＳ Ｐゴシック", Osaka, "ヒラギノ角ゴ Pro W3";
+padding:0px 4px;
+}
+
