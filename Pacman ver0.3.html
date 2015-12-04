@@ -14,9 +14,10 @@ const UP = 0;
 const DOWN = 1;
 const RIGHT = 2;
 const LEFT = 3;
+const CHUNK = 18
 
 //マス目の設定
-var chunk = new Array(324);
+var chunk = new Array(CHUNK*CHUNK);
 
 chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
           0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
@@ -37,15 +38,15 @@ chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
           0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
 
-//パックマンを描画するための変数及びその座標
+//パックマンを描画するための変数
 var cv = document.getElementById("pacman");
 var ctx = cv.getContext("2d");
 
-//パックマンスタート地点,向き,半径, 動き,口の動き
-pac_chunk = 18*3+3;
+//パックマンスタートの諸々
 const p_radius = 20;
-pac_x = p_radius*2*3;
-pac_y = p_radius*2*3;
+pac_chunk = CHUNK*3+3;	/*CHUNK*x+y　　(x,yは初期座標の配列)*/
+pac_x = p_radius*2*3;/*初期座標x*/
+pac_y = p_radius*2*3;/*初期座標y*/
 var mouthangle = 0;
 var mouthdirection=0;
 var direction;
@@ -70,7 +71,6 @@ var tmp_move_y = 0;
 		ctx.clearRect (0 , 0 , 1000 ,700 );
 		decideMoving();
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
-		drawSomething(ctx,200,200);
 	}
 	
 	//パックマンの形状を表すメソッド
@@ -192,10 +192,10 @@ var tmp_move_y = 0;
 		if(chunk[pac_chunk-1] == 0 && tmp_direction == LEFT){
 			tmp_move_x = 0;
 		}
-		if(chunk[pac_chunk+18] == 0 && tmp_direction == DOWN){
+		if(chunk[pac_chunk+CHUNK] == 0 && tmp_direction == DOWN){
 			tmp_move_y = 0;
 		}
-		if(chunk[pac_chunk-18] == 0 && tmp_direction == UP){
+		if(chunk[pac_chunk-CHUNK] == 0 && tmp_direction == UP){
 			tmp_move_y = 0;
 		}
 	}
@@ -212,19 +212,13 @@ var tmp_move_y = 0;
 		}
 		switch(move_y){
 		case 1:
-			pac_chunk=pac_chunk+18;
+			pac_chunk=pac_chunk+CHUNK;
 			break;
 		case -1:
-			pac_chunk=pac_chunk-18;
+			pac_chunk=pac_chunk-CHUNK;
 			break;
 		}
 	}
-
-	//食べ物の画像なりを入れる所
-	function drawSomething(ctx,cx,cy){
-		ctx.fillStyle="#FF0000";//図形の色
-		ctx.fillRect(cx, cy, 100, 100);
-		}
 
 </script>
 </head>
