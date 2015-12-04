@@ -17,23 +17,6 @@ const LEFT = 3;
 
 //マス目の設定
 var chunk = new Array(64);
-/*
-var chunk_x = new Array(64);
-var chunk_y = new Array(64);
-var chunk_object = new Array(64);
-var chunk_objectx = new Array(64);
-for(var x=0; x<8; x++){
-	for(var y=0; y<8; y++){
-	chunk_x[x+8*y]=100*x;
-	chunk_y[x+8*y]=100*y;
-	chunk_object[x+8*y] = document.getElementById("pacman");
-	chunk_objectx[x+8*y] = chunk_object[x+8*y].getContext("2d");
-	chunk_objectx[x+8*y].strokeStyle="#FFF000";//輪郭の色
-	chunk_objectx[x+8*y].fillStyle="#FFF000";//形状内の色
-	chunk_objectx[x+8*y].fillRect(100*x, 100*y, 100, 100);
-	}
-}
-*/
 
 chunk = [ 0,0,0,0,0,0,0,0,
           0,1,1,1,1,1,1,0,
@@ -42,8 +25,7 @@ chunk = [ 0,0,0,0,0,0,0,0,
           0,1,1,1,1,1,1,0,
           0,1,1,1,1,1,1,0,
           0,1,1,1,1,1,1,0,
-          0,0,0,0,0,0,0,0 ]
-          
+          0,0,0,0,0,0,0,0 ];
 
 //パックマンを描画するための変数及びその座標
 var cv = document.getElementById("pacman");
