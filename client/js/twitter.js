@@ -1,7 +1,7 @@
-var consumerKey    = "vlaPqZoldKyrhygo8CVHifezD";
-var consumerSecret = "HIulAOYBTdybIY2pyQga0i0zjbUQ3lXmf7bzYelnbHhDWgmOO9";
-var accessToken    = "1446387127-GMz7jbLT57JTxkxJIRk2j3JB08KP9NETcLLOBVZ";
-var tokenSecret    = "S0sdm4x5qoNohtnppfFpXGICYH3IFssX5HaR0Rbl5oLS5";
+var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
+var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
+var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
+var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";
 
 var count = 25; // 表示する件数
 

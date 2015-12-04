@@ -7,7 +7,10 @@
  
     <!-- CSS スタイルの設定 ↓ -->
     <style type="text/css">
- 
+        .box {
+            display: table-cell;
+        }
+        
         #twitter {
             /* サイズ */
             width: 1000px;
@@ -28,10 +31,29 @@
 <body>
  
     <!-- UI部分 ↓ -->
-    <div id="twitter">
-        <div class="Tweet表示エリア">
-            ここにツイートを表示する
+    <div class = "box">
+        <div id="twitter">
+            <div class="Tweet表示エリア">
+                ここにツイートを表示する
+            </div>
         </div>
+    </div>
+        
+    <div class = "box">
+        <table id="user" align = "right">
+            <tr id="user1">
+                <td></td>
+            </tr>
+            <tr id="user2">
+                <td></td>
+            </tr>
+            <tr id="user3">
+                <td></td>
+            </tr>
+            <tr id="user4">
+                <td></td>
+            </tr>
+        </table>
     </div>
  
     <input id="キーワード入力欄" placeholder="検索したいキーワード"></input> <!-- テキストボックス -->
@@ -51,9 +73,9 @@
 var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
 var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
 var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
-var tokenSecret    = " v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";
+var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";
  
-var count = 10; // 表示する件数
+var count = 4; // 表示する件数
  
 // Twitter APIを使用してTweetを取得する部分
 function getTwitter(action, keywords) {
@@ -104,9 +126,11 @@ function update(data){ // 引数(data)に取得したデータが入ってくる
         var imgsrc = result[i].user.profile_image_url; // ツイートした人のプロフィール画像
         var content = result[i].text; // ツイートの内容
         var updated = result[i].created_at; // ツイートした時間
+        //var friends = result[i].
         var time = "";
         // Tweet表示エリアに取得したデータを追加していく
         $(".Tweet表示エリア").append('<img src="'+imgsrc+'" />' + '<p>' + name + ' | ' + content + ' | ' + updated + '</p>');
+        $("#user" +(i+1)+ " > td").append('<img src="'+imgsrc+'" />');
     }
 }
     
