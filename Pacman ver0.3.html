@@ -49,9 +49,9 @@ var ctx = cv.getContext("2d");
 
 //パックマンスタートの諸々
 const p_radius = 20;
-pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
-pac_x = p_radius*2*3+p_radius;/*初期座標x*/
-pac_y = p_radius*2*3+p_radius;/*初期座標y*/
+var pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
+var pac_x = p_radius*2*3+p_radius;/*初期座標x*/
+var pac_y = p_radius*2*3+p_radius;/*初期座標y*/
 var mouthangle = 0;
 var mouthdirection=0;
 var direction;
@@ -244,6 +244,10 @@ var tmp_move_y = 0;
 </script>
 </head>
 <body onload="start()">
-	
+	<div id="pagebody">
+		<div id="header">
+			<h1>PACMAN and Twitter</h1>
+		</div>
+	</div>
 </body>
 </html>
