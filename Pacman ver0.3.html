@@ -42,13 +42,16 @@ chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 
 //パックマンを描画するための変数
 var cv = document.getElementById("pacman");
+	cv.style.position = "absolute";
+    cv.style.left = "100px";
+    cv.style.top = "100px";
 var ctx = cv.getContext("2d");
 
 //パックマンスタートの諸々
 const p_radius = 20;
 pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
-pac_x = p_radius*2*3;/*初期座標x*/
-pac_y = p_radius*2*3;/*初期座標y*/
+pac_x = p_radius*2*3+p_radius;/*初期座標x*/
+pac_y = p_radius*2*3+p_radius;/*初期座標y*/
 var mouthangle = 0;
 var mouthdirection=0;
 var direction;
@@ -86,7 +89,7 @@ var tmp_move_y = 0;
 		//壁の描画関数
 	function drawWall(ctx,chunk_x,chunk_y){
 		ctx.fillStyle="#000000";//図形の色
-		ctx.fillRect(chunk_x - p_radius ,chunk_y - p_radius,p_radius*2,p_radius*2); 
+		ctx.fillRect(chunk_x,chunk_y,p_radius*2,p_radius*2); 
 	}
 	
 	
@@ -193,7 +196,7 @@ var tmp_move_y = 0;
 	
 	//区画間の移動方向の決定
 	function decideMoving(){
-		if(pac_x % (p_radius*2) == 0 && pac_y % (p_radius*2) == 0){
+		if((pac_x+p_radius) % (p_radius*2) == 0 && (pac_y+p_radius) % (p_radius*2) == 0){
 			collisionDetection(pac_chunk);
 			direction = tmp_direction;
 			move_x = tmp_move_x;
