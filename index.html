@@ -7,6 +7,7 @@
  
     <!-- CSS スタイルの設定 ↓ -->
     <style type="text/css">
+        
         .box {
             display: table-cell;
         }
@@ -21,8 +22,9 @@
             border: 1px solid #CCC; /* 枠の色 */
         }
  
-        .Tweet表示エリア {
+        #Tweet表示エリア {
             font-size: 12px; /*文字のサイズ*/
+            display: table-cell;
         }
  
     </style>
@@ -31,15 +33,15 @@
 <body>
  
     <!-- UI部分 ↓ -->
-    <div class = "box">
-        <div id="twitter">
-            <div class="Tweet表示エリア">
-                ここにツイートを表示する
-            </div>
+    
+    <div class="box" id="twitter">
+        <div id="Tweet表示エリア">
+            ここにツイートを表示する
         </div>
     </div>
-        
-    <div class = "box">
+
+    <div class="box">
+        <button id="next_person1"></button>
         <table id="user" align = "right">
             <tr id="user1">
                 <td></td>
@@ -55,7 +57,7 @@
             </tr>
         </table>
     </div>
- 
+        
     <input id="キーワード入力欄" placeholder="検索したいキーワード"></input> <!-- テキストボックス -->
     <button id="検索ボタン">検索!</button> <!-- 検索実行用ボタン -->
  
@@ -74,6 +76,10 @@ var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
 var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
 var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
 var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";
+var id = new Array(4);
+var tempId;
+var tempFriends;
+var tempFollowers;
  
 var count = 4; // 表示する件数
  
@@ -117,21 +123,87 @@ function getTwitter(action, keywords) {
     });
 }
     
+// Twitter APIを使用してTweetを取得する部分
+function getNextperson(action, id) {
+
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/friends/ids.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            "user_id": id, //id
+        }
+    };
+
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
 // UIの更新
 function update(data){ // 引数(data)に取得したデータが入ってくる
-    $(".Tweet表示エリア").empty(); // 表示エリアを空にする
+    $("#Tweet表示エリア").empty(); // 表示エリアを空にする
+    $("#user1 > td").empty(); // 表の中身を空にする
+    $("#user2 > td").empty(); // 表の中身を空にする
+    $("#user3 > td").empty(); // 表の中身を空にする
+    $("#user4 > td").empty(); // 表の中身を空にする
+    /*for(var i=0;i<4;i++){     //ボタンを消す
+        if($('#next_person' + (i+1)).length){
+            $('#next_person' + (i+1)).remove();
+        }
+    }*/
+
     var result = data.statuses; // 取得したデータから、メソッドチェーンで必要なものを取得
     for( var i = 0; i < result.length; i++ ) {
         var name = result[i].user.name; // ツイートした人の名前
         var imgsrc = result[i].user.profile_image_url; // ツイートした人のプロフィール画像
         var content = result[i].text; // ツイートの内容
         var updated = result[i].created_at; // ツイートした時間
-        //var friends = result[i].
+        var followers = result[i].user.followers_count; // フォロワー数
+        var friends = result[i].user.friends_count; // フォロー数
+        id[i] = result[i].id; // id
+        //var retweet = result[i].retweet_count;
         var time = "";
         // Tweet表示エリアに取得したデータを追加していく
-        $(".Tweet表示エリア").append('<img src="'+imgsrc+'" />' + '<p>' + name + ' | ' + content + ' | ' + updated + '</p>');
-        $("#user" +(i+1)+ " > td").append('<img src="'+imgsrc+'" />');
+        $("#Tweet表示エリア").append('<img src="'+imgsrc+'" />' + '<p>' + name + ' | ' + content + ' | ' + updated + '</p>');
+        $("#user" +(i+1)+ " > td").append('<img src="'+imgsrc+'" />' + '<p>' + followers + '|' + friends + '|' + id[i] + '</p>');
     }
+    /*$("#user1").append('<button id="next_person1">次の人</button>');
+    $("#user2").append('<button id="next_person2">次の人</button>');
+    $("#user3").append('<button id="next_person3">次の人</button>');
+    $("#user4").append('<button id="next_person4">次の人</button>');*/
+}
+    
+// UIの更新
+function update2(json){ // 引数(json)に取得したデータが入ってくる
+    console.log(json);
+    var result = json.ids; // 取得したデータから、メソッドチェーンで必要なものを取得
+    
+    //var name = result[i].user.name; // ツイートした人の名前
+    //var imgsrc = result[i].user.profile_image_url; // ツイートした人のプロフィール画像
+    //tempFollowers = result.user.followers_count; // フォロワー数
+    //tempFriends = result.user.friends_count; // フォロー数
+    tempId = result[0]; // id
+    
 }
     
  // ウィンドウを読み込み後に実行される
@@ -139,6 +211,7 @@ function update(data){ // 引数(data)に取得したデータが入ってくる
  
             // idに検索ボタンと指定されている button要素にクリックイベントを設定
             $("#検索ボタン").on("click", function(){
+                console.log('検索ボタンクリック');
                 // idにキーワード入力欄と指定されている input要素に入力されている値を取得
                 var keywords = $("#キーワード入力欄").val();
                 // keywordsに何も入力されていなかった場合の処理
@@ -157,8 +230,22 @@ function update(data){ // 引数(data)に取得したデータが入ってくる
                 getTwitter(url, keywords);
  
             });
- 
+            
+            $("#next_person1").on("click", function(){
+                console.log(id[0]);
+                console.log('次の人ボタンクリック');
+                $("#user1 > td > p").empty(); // 表の中身を空にする
+                var url = "https://api.twitter.com/1.1/friends/ids.json";
+                getNextperson(url, id[0]);
+                id[0] = tempId;
+                console.log(id[0]);
+                //$("#user" +(i+1)+ " > td").append('<p>' + followers + '|' + friends + '|' + id[0] + '</p>');
+            });
+            
         });
+    
+        
+
  
     </script>
  
