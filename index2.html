@@ -140,10 +140,16 @@ function getNextperson(action, id) {
             oauth_signature_method: "HMAC-SHA1",
             oauth_consumer_key: consumerKey, // コンシューマーキー
             oauth_token: accessToken, // アクセストークン
-            "screen_name": "とんぼ", //ユーザ名
+            //user_id: 1234, //ユーザ名
+            screen_name: "mrboo6111", //ユーザ名
+            count: 1,//個数
+            callback: "rewrite"
         }
     };
 
+    
+    
+    
     // OAuth認証関係
     OAuth.setTimestampAndNonce(message);
     OAuth.SignatureMethod.sign(message, accessor);
@@ -194,10 +200,10 @@ function update(data){ // 引数(data)に取得したデータが入ってくる
 }
     
 // UIの更新
-function update2(json){ // 引数(json)に取得したデータが入ってくる
-    console.log(json);
-    var result = json.ids; // 取得したデータから、メソッドチェーンで必要なものを取得
-    
+function rewrite(data){ // 引数(data)に取得したデータが入ってくる
+    console.log(data);
+    var result = data.ids[0]; // 取得したデータから、メソッドチェーンで必要なものを取得
+    console.log(result);
     //var name = result[i].user.name; // ツイートした人の名前
     //var imgsrc = result[i].user.profile_image_url; // ツイートした人のプロフィール画像
     //tempFollowers = result.user.followers_count; // フォロワー数
@@ -232,13 +238,13 @@ function update2(json){ // 引数(json)に取得したデータが入ってく�
             });
             
             $("#next_person1").on("click", function(){
-                console.log(id[0]);
+                //console.log(id[0]);
                 console.log('次の人ボタンクリック');
                 $("#user1 > td > p").empty(); // 表の中身を空にする
                 var url = "https://api.twitter.com/1.1/friends/ids.json";
                 getNextperson(url, id[0]);
-                id[0] = tempId;
-                console.log(id[0]);
+                //id[0] = tempId;
+                //console.log(id[0]);
                 //$("#user" +(i+1)+ " > td").append('<p>' + followers + '|' + friends + '|' + id[0] + '</p>');
             });
             
