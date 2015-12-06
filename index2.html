@@ -54,11 +54,13 @@ var image = new Array(4);
 var followers_count = new Array(4);
 var friends_count = new Array(4);
 var tweetNum = new Array(4);
+var text1, text2, text3, text4;
 var temp_name;
 var temp_imgsrc;
 var temp_followers_count;
 var temp_friends_count;
 var temp_tweetNum;
+var temp_text;
 var followers
 var tempId;
 var tempFriends;
@@ -163,6 +165,7 @@ function setInfo(data){
     temp_followers_count = result.followers_count;
     temp_friends_count = result.friends_count;
     temp_tweetNum = result.statuses_count;
+    temp_text = data[0].text;
     if(g_flag == 1){
         g.resolve();
         g_flag = 0;
@@ -173,6 +176,7 @@ function setInfo(data){
         followers_count[0] = result.followers_count;
         friends_count[0] = result.friends_count;
         tweetNum[0] = result.statuses_count;
+        text1 = data[0].text;
         console.log(followers_count[0]);
         console.log(friends_count[0]);
         console.log(tweetNum[0]);
@@ -184,6 +188,7 @@ function setInfo(data){
         followers_count[1] = result.followers_count;
         friends_count[1] = result.friends_count;
         tweetNum[1] = result.statuses_count;
+        text2 = data[0].text;
         console.log(followers_count[1]);
         console.log(friends_count[1]);
         console.log(tweetNum[1]);
@@ -195,6 +200,7 @@ function setInfo(data){
         followers_count[2] = result.followers_count;
         friends_count[2] = result.friends_count;
         tweetNum[2] = result.statuses_count;
+        text3 = data[0].text;
         console.log(followers_count[2]);
         console.log(friends_count[2]);
         console.log(tweetNum[2]);
@@ -206,6 +212,7 @@ function setInfo(data){
         followers_count[3] = result.followers_count;
         friends_count[3] = result.friends_count;
         tweetNum[3] = result.statuses_count;
+        text4 = data[0].text;
         console.log(followers_count[3]);
         console.log(friends_count[3]);
         console.log(tweetNum[3]);
@@ -314,7 +321,8 @@ function rewrite(data){ // 引数(data)に取得したデータが入ってく�
              friends_count[0] = temp_friends_count;
              followers_count[0] = temp_followers_count;
              tweetNum[0] = temp_tweetNum;
-             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + '</p>');
+             text1 = temp_text;
+             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
          });
      });
  });
@@ -340,7 +348,8 @@ $("#next_person2").on("click", function(){
              friends_count[1] = temp_friends_count;
              followers_count[1] = temp_followers_count;
              tweetNum[1] = temp_tweetNum;
-             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + '</p>');
+             text2 = temp_text;
+             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
          });
      });
  });
@@ -366,7 +375,8 @@ $("#next_person3").on("click", function(){
              friends_count[2] = temp_friends_count;
              followers_count[2] = temp_followers_count;
              tweetNum[2] = temp_tweetNum;
-             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + '</p>');
+             text3 = temp_text;
+             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
          });
      });
  });
@@ -392,7 +402,8 @@ $("#next_person4").on("click", function(){
              friends_count[3] = temp_friends_count;
              followers_count[3] = temp_followers_count;
              tweetNum[3] = temp_tweetNum;
-             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + '</p>');
+             text = temp_text;
+             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
          });
      });
  });
@@ -403,10 +414,10 @@ $("#next_person4").on("click", function(){
      var screen_name = "mrboo6111";
      getPeople(url, screen_name);
      f.promise().then(function(){
-         $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + '</p>');
-         $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + '</p>');
-         $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + '</p>');
-         $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + '</p>');
+         $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+         $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+         $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+         $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
      });
  });
  
