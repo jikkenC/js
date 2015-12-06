@@ -15,7 +15,7 @@ const DOWN = 1;
 const RIGHT = 2;
 const LEFT = 3;
 const CHUNK_X = 17;
-const CHUNK_Y = 19;
+const CHUNK_Y = 15;
 
 //マス目の設定
 var chunk = new Array(CHUNK_X*CHUNK_Y);
@@ -34,30 +34,28 @@ chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
           0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,
           0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,
           0,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,0,
-          0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,1,0,
-          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-          0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,
-          0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
 
 //パックマンを描画するための変数
 var cv = document.getElementById("pacman");
 	cv.style.position = "absolute";
-    cv.style.left = "100px";
-    cv.style.top = "100px";
+    cv.style.left = "10px";
+    cv.style.top = "5px";
 var ctx = cv.getContext("2d");
 
 //パックマンスタートの諸々
 const p_radius = 20;
 var pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
+var	previous_x=3;
+var previous_y=3;
 var pac_x = p_radius*2*3+p_radius;/*初期座標x*/
 var pac_y = p_radius*2*3+p_radius;/*初期座標y*/
 var mouthangle = 0;
 var mouthdirection=0;
 var direction;
 var tmp_direction = DOWN;
-var move_x;
-var move_y;
+var move_x=0;
+var move_y=0;
 var tmp_move_x = 0;
 var tmp_move_y = 0;
 
@@ -72,7 +70,7 @@ var tmp_move_y = 0;
 	
 	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
 	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
-	timerID_2 = setInterval ('reDraw()', 5);
+	timerID_2 = setInterval ('reDraw()', 10);
 	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
 	//true or false: イベントの優先順位
 	window.addEventListener ('keydown' , keydownfunc , false);
@@ -83,6 +81,7 @@ var tmp_move_y = 0;
 		//clearRect(): 指定範囲内を透明にする
 		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
+		drawTweet(ctx,previous_x*40,previous_y*40);
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
 	}
 	
@@ -92,6 +91,10 @@ var tmp_move_y = 0;
 		ctx.fillRect(chunk_x,chunk_y,p_radius*2,p_radius*2); 
 	}
 	
+	function drawTweet(ctx,x,y){
+		ctx.fillStyle="#01FF23";
+		ctx.fillRect(x,y,10,10);
+	}
 	
 	//パックマンの形状を表すメソッド
 	//drawPacman(2D, 中心のx座標, 中心のy座標,　口の角度):
@@ -197,6 +200,8 @@ var tmp_move_y = 0;
 	//区画間の移動方向の決定
 	function decideMoving(){
 		if((pac_x+p_radius) % (p_radius*2) == 0 && (pac_y+p_radius) % (p_radius*2) == 0){
+			previous_x=previous_x+move_x;
+			previous_y=previous_y+move_y;
 			collisionDetection(pac_chunk);
 			direction = tmp_direction;
 			move_x = tmp_move_x;
