@@ -60,10 +60,10 @@ var alien_move_x;
 var alien_move_y;
 var alien_tmp_move_x = 0;
 var alien_tmp_move_y = 0;
-var alien_irection;
+var alien_direction;
 var alien_tmp_direction = DOWN;
 
-var rand=Math.floor( Math.random() * 4 );//エイリアンの方向　
+var rand=DOWN;//エイリアンの方向　
 
 
 
@@ -91,10 +91,9 @@ var rand=Math.floor( Math.random() * 4 );//エイリアンの方向　
 		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
-		ctx.clearRect (alien_x - p_radius,alien_y - p_radius , p_radius*2 , p_radius*2 );
 		Alien();
 		AliendecideMoving();
-		drawAlien(ctx, alien_x+alien_move_x, alien_y+=alien_move_y);
+		drawAlien((alien_x+=alien_move_x)-p_radius, (alien_y+=alien_move_y)-p_radius);
 	}
 	
 		//壁の描画関数
@@ -257,8 +256,8 @@ var rand=Math.floor( Math.random() * 4 );//エイリアンの方向　
 
 
 	function drawAlien(cx,cy){
-		ctx.fillStyle="#FF0000";//図形の色
-		ctx.fillRect(cx,cx,p_radius*2,p_radius*2);
+		ctx.fillStyle="#FF00FF";//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
 	
@@ -306,28 +305,28 @@ var rand=Math.floor( Math.random() * 4 );//エイリアンの方向　
 		if(chunk[alien_chunk+1] == 0 && alien_tmp_direction == RIGHT){
 			alien_tmp_move_x = 0;
 			    alien_tmp_direction = DOWN;
-				alien_tmp_move_y = alien_tmp_move_y-1;
-				rand=4;
+				alien_tmp_move_y = -1;
+				rand=3;
 			
 		}
 		if(chunk[alien_chunk-1] == 0 && alien_tmp_direction == LEFT){
 			alien_tmp_move_x = 0;
 			alien_tmp_direction = DOWN;
-			alien_tmp_move_y = alien_tmp_move_y-1;
-				rand=4;
+			alien_tmp_move_y = -1;
+				rand=3;
 			
 		}
 		if(chunk[alien_chunk+CHUNK_X] == 0 && alien_tmp_direction == DOWN){
 			alien_tmp_move_y = 0;
 			alien_tmp_direction = RIGHT;
-			alien_tmp_move_x = alien_tmp_move_x+1;
+			alien_tmp_move_x = +1;
 				rand=1;
 			
 		}
 		if(chunk[alien_chunk-CHUNK_X] == 0 && alien_tmp_direction == UP){
 			alien_tmp_move_y = 0;
 			alien_tmp_direction = RIGHT;
-			alien_tmp_move_x = alien_tmp_move_x+1;
+			alien_tmp_move_x = +1;
 				rand=1;
 			
 		}
