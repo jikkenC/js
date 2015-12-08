@@ -1,11 +1,23 @@
 <html lang="ja">
 <head>
 <meta charset-"utf-8"/>
+
+<!-- ライブラリの読み込み部分 ↓ -->
+    <!-- jqueryを読み込む -->
+    <script src="./jquery.js"></script>
+ 
+    <!-- OAuth認証のライブラリを読み込む -->
+    <script type="text/javascript" src="./oauth.js"></script>
+    <script type="text/javascript" src="./sha1.js"></script>
+    <script type="text/javascript" src="nicoscreen.js"></script>
+
     
-<!-- UI部分 ↓ -->
+    <!-- UI部分 ↓ -->
     
     <button id="start">スタート</button>
-    
+    <div class="box1">
+        <button align="right" id="next_person1">次の人1</button>    
+    </div>
     <div class="box1">
         <button align="right" id="next_person1">次の人1</button>
     </div>
@@ -18,22 +30,87 @@
     <div class="box4">
         <button align="right" id="next_person4">次の人4</button>
     </div>
- 
+    
+    
+<div id="nicoscreen" style="width:1000;height:800"> 
 
-<!-- ライブラリの読み込み部分 ↓ -->
-    <!-- jqueryを読み込む -->
-    <script src="./jquery.js"></script>
- 
-    <!-- OAuth認証のライブラリを読み込む -->
-    <script type="text/javascript" src="./oauth.js"></script>
-    <script type="text/javascript" src="./sha1.js"></script>
 <!--キャンバス領域-->
 <canvas id="pacman" width="1000" height="800">
 </canvas>
-
+    
+</div>
 
 <script type="text/javascript">
-//定数
+    
+    //////////////////////////////////////
+var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
+var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
+var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
+var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";
+var name1, name2, name3, name4;
+var imgsrc = new Array(4);
+var id = new Array(4);
+var image = new Array(4);
+var followers_count = new Array(4);
+var friends_count = new Array(4);
+var tweetNum = new Array(4);
+var text1, text2, text3, text4;
+var temp_name;
+var temp_imgsrc;
+var temp_followers_count;
+var temp_friends_count;
+var temp_tweetNum;
+var temp_text;
+var followers
+var tempId;
+var tempFriends;
+var tempFollowers;
+var d;
+var f;
+var g;
+var g_flag = 0;
+var p;
+var q;
+var r;
+var s;
+var p_flag = 0;
+var q_flag = 0;
+var r_flag = 0;
+var s_flag = 0; 
+var count = 4; // 表示する件数
+    
+///////////////////////////////////////////////
+    	var obj = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"white", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:true //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
+			
+			"ワロスｗｗｗｗｗ",
+			"ｗｗｗｗｗ",
+			"かわいい",	
+			"(*´д`*)はぁはぁ",
+			"なんだこれｗｗｗ",
+			"ねこかわゆす"
+			
+			
+			
+		]
+		
+	};
+    
+//////////////////////////////////////////////
+    
+//パックマンの定数
 const UP = 0;
 const DOWN = 1;
 const RIGHT = 2;
@@ -92,7 +169,7 @@ var alien_up=[0,1,2];
 var alien_down=[0,1,3];
 var rand= Math.floor( Math.random() * 2);//エイリアンの方向　
 var rand2;//通路が枝分かれの際使用
-
+    
 	function start() {
 	
 	//壁の描画
@@ -101,10 +178,11 @@ var rand2;//通路が枝分かれの際使用
 			if(chunk[CHUNK_X*j+i] == 0) drawWall(ctx,i*p_radius*2,j*p_radius*2);
 		}
 	}
-	
+    nicoscreen.set(obj);
+	nicoscreen.start(); 
 	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
-	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
 	timerID_2 = setInterval ('reDraw()', 5);
+    timerID_3 = setInterval ('reDrawAlien()', 10);
 	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
 	//true or false: イベントの優先順位
 	window.addEventListener ('keydown' , keydownfunc , false);
@@ -112,16 +190,20 @@ var rand2;//通路が枝分かれの際使用
 	
 	//再描画のメソッド
 	function reDraw(){
+        checkPacmanMouthMove();
 		//clearRect(): 指定範囲内を透明にする
 		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
-		ctx.clearRect (alien_x - p_radius,alien_y- p_radius , p_radius*2 , p_radius*2);
-		checkAlienDetection();
-		Alien();
+		checkAlienDetection();	  
+	}
+    
+    function reDrawAlien(){
+        ctx.clearRect (alien_x - p_radius,alien_y- p_radius , p_radius*2 , p_radius*2);
+        Alien();
 		AliendecideMoving();
 		drawAlien((alien_x+=alien_move_x)-p_radius, (alien_y+=alien_move_y)-p_radius);
-	}
+    }
 	
 		//壁の描画関数
 	function drawWall(ctx,chunk_x,chunk_y){
@@ -261,7 +343,7 @@ var rand2;//通路が枝分かれの際使用
 	//パックマンとエイリアンのあたり判定
 	function checkAlienDetection(){
 		if(Math.abs(pac_x - alien_x) < p_radius*2 && Math.abs(pac_y - alien_y) < p_radius*2){
-			console.log("ouch!");
+			console.log("hoge");
 		}
 	}
 	
@@ -630,43 +712,12 @@ var rand2;//通路が枝分かれの際使用
 		}
 	}
     
+    /////////////////////////////////////////////
     
-    var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
-var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
-var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
-var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";
-var name1, name2, name3, name4;
-var imgsrc = new Array(4);
-var id = new Array(4);
-var image = new Array(4);
-var followers_count = new Array(4);
-var friends_count = new Array(4);
-var tweetNum = new Array(4);
-var text1, text2, text3, text4;
-var temp_name;
-var temp_imgsrc;
-var temp_followers_count;
-var temp_friends_count;
-var temp_tweetNum;
-var temp_text;
-var followers
-var tempId;
-var tempFriends;
-var tempFollowers;
-var d;
-var f;
-var g;
-var g_flag = 0;
-var p;
-var q;
-var r;
-var s;
-var p_flag = 0;
-var q_flag = 0;
-var r_flag = 0;
-var s_flag = 0;
- 
-var count = 4; // 表示する件数
+    
+    
+    
+   //////////////////////////////////////////////
     
 // Twitter APIを使用してフォローのうちの4人のIDを取得する部分
 function getPeople(action, screen_name) {
@@ -1015,5 +1066,6 @@ $("#next_person4").on("click", function(){
 <body onload="start()">
     
       
+ 
 </body>
 </html>
