@@ -1,0 +1,615 @@
+<html>
+<head>
+<meta charset-"utf-8"/>
+
+<!--キャンバス領域-->
+<canvas id="pacman" width="1000" height="800">
+</canvas>
+
+
+<script type="text/javascript">
+//定数
+const UP = 0;
+const DOWN = 1;
+const RIGHT = 2;
+const LEFT = 3;
+const CHUNK_X = 17;
+const CHUNK_Y = 19;
+//マス目の設定
+var chunk = new Array(CHUNK_X*CHUNK_Y);
+chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+          0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,
+          0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,
+          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+          0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,1,0,
+          0,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,0,
+          0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,
+          0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,
+          0,1,1,0,1,0,1,0,0,0,1,0,1,0,1,1,0,
+          0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,
+          0,1,1,0,1,0,1,0,0,0,1,0,1,0,1,1,0,
+          0,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,
+          0,0,0,0,1,0,0,1,0,1,0,0,1,0,0,0,0,
+          0,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,0,
+          0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,1,0,
+          0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+          0,1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0,
+          0,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ];
+//パックマンを描画するための変数
+var cv = document.getElementById("pacman");
+var ctx = cv.getContext("2d");
+//パックマンスタートの諸々
+const p_radius = 20;
+pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
+pac_x = p_radius*2*3;/*初期座標x*/
+pac_y = p_radius*2*3;/*初期座標y*/
+var mouthangle = 0;
+var mouthdirection=0;
+var direction;
+var tmp_direction = DOWN;
+var move_x;
+var move_y;
+var tmp_move_x = 0;
+var tmp_move_y = 0;
+
+//エイリアンのデータ
+alien_chunk = CHUNK_X*3+4;
+alien_x = p_radius*2*4;/*初期座標x*/
+alien_y = p_radius*2*3;/*初期座標y*/
+var alien_move_x;
+var alien_move_y;
+var alien_tmp_move_x = 0;
+var alien_tmp_move_y = 0;
+var alien_right=[1,2,3];
+var alien_left=[0,2,3];
+var alien_up=[0,1,2];
+var alien_down=[0,1,3];
+var rand= Math.floor( Math.random() * 2);//エイリアンの方向　
+var rand2;//通路が枝分かれの際使用
+
+	function start() {
+	
+	//壁の描画
+	for(var i=0;i<CHUNK_X;i++){
+		for(var j=0;j<CHUNK_Y; j++){
+			if(chunk[CHUNK_X*j+i] == 0) drawWall(ctx,i*p_radius*2,j*p_radius*2);
+		}
+	}
+	
+	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
+	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
+	timerID_2 = setInterval ('reDraw()', 5);
+	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
+	//true or false: イベントの優先順位
+	window.addEventListener ('keydown' , keydownfunc , false);
+	}
+	
+	//再描画のメソッド
+	function reDraw(){
+		//clearRect(): 指定範囲内を透明にする
+		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
+		decideMoving();
+		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
+		ctx.clearRect (alien_x - p_radius,alien_y- p_radius , p_radius*2 , p_radius*2);
+		checkAlienDetection();
+		Alien();
+		AliendecideMoving();
+		drawAlien((alien_x+=alien_move_x)-p_radius, (alien_y+=alien_move_y)-p_radius);
+	}
+	
+		//壁の描画関数
+	function drawWall(ctx,chunk_x,chunk_y){
+		ctx.fillStyle="#000000";//図形の色
+		ctx.fillRect(chunk_x - p_radius ,chunk_y - p_radius,p_radius*2,p_radius*2); 
+	}
+	
+	
+	//パックマンの形状を表すメソッド
+	//drawPacman(2D, 中心のx座標, 中心のy座標,　口の角度):
+	function drawPacman(ctx,cx,cy,angle){
+		ctx.fillStyle="#FFF000";//図形の色
+		switch (direction) {
+			case RIGHT:				
+				ctx.beginPath();//現在のパスをリセット
+				ctx.arc(cx,cy,p_radius,(30-angle) * Math.PI / 180,(330+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((30-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((30-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((330+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((330+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case LEFT:
+				ctx.beginPath();
+				ctx.arc(cx,cy,p_radius,(210-angle) * Math.PI / 180,(510+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((210-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((210-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((510+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((510+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case UP:
+				ctx.beginPath();
+				ctx.arc(cx,cy,p_radius,(300-angle) * Math.PI / 180,(600+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((300-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((300-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((600+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((600+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case DOWN:
+				ctx.beginPath();
+				ctx.arc(cx,cy,p_radius,(120-angle) * Math.PI / 180,(420+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((120-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((120-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((420+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((420+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+		}
+		
+	}
+	
+	
+	//パックマンの口の角度を変化させる関数
+	function checkPacmanMouthMove(){
+		switch (mouthangle){
+			case 0:
+				mouthdirection = 0;
+				break;
+			case 30:
+				mouthdirection = 1;
+				break;
+			default:
+				break;
+		}
+		switch (mouthdirection){
+			case 0:
+				mouthangle++;
+				break;
+			case 1:
+				mouthangle--;
+				break;
+		}
+	}
+	
+	//移動方向の予約
+	function keydownfunc (event) {
+	//どのキーが押されたかの情報を取得する
+	var code = event.keyCode;
+	//スイッチ文でケースにより処理を変える
+	switch (code) {
+		case 37://←キーが押された場合の番号
+			tmp_direction = LEFT;
+			tmp_move_x = -1;//x座標を1px減らす（左に動かす）
+			tmp_move_y = 0;
+			break;//ここでブレークしないと下のコードが実行されてしまう
+		case 39://→キーが押された場合の番号
+			tmp_direction = RIGHT;
+			tmp_move_x = 1;//x座標を1px増やす（右に動かす）
+			tmp_move_y = 0;
+			break;
+		case 38://↑キーが押された場合の番号
+			tmp_direction = UP;
+			tmp_move_x = 0;
+			tmp_move_y = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 40://↓キーが押された場合の番号
+			tmp_direction = DOWN;
+			tmp_move_x = 0;
+			tmp_move_y = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function decideMoving(){
+		if(pac_x % (p_radius*2) == 0 && pac_y % (p_radius*2) == 0){
+			collisionDetection(pac_chunk);
+			direction = tmp_direction;
+			move_x = tmp_move_x;
+			move_y = tmp_move_y;
+			setPacChunk(move_x , move_y);
+		}
+	}
+	
+	//壁などのあたり判定の決定
+	function collisionDetection(pac_chunk){
+		if(chunk[pac_chunk+1] == 0 && tmp_direction == RIGHT){
+			tmp_move_x = 0;
+		}
+		if(chunk[pac_chunk-1] == 0 && tmp_direction == LEFT){
+			tmp_move_x = 0;
+		}
+		if(chunk[pac_chunk+CHUNK_X] == 0 && tmp_direction == DOWN){
+			tmp_move_y = 0;
+		}
+		if(chunk[pac_chunk-CHUNK_X] == 0 && tmp_direction == UP){
+			tmp_move_y = 0;
+		}
+	}
+	
+	//パックマンとエイリアンのあたり判定
+	function checkAlienDetection(){
+		if(Math.abs(pac_x - alien_x) < p_radius*2 && Math.abs(pac_y - alien_y) < p_radius*2){
+			console.log("ouch!");
+		}
+	}
+	
+
+	
+	//パックマンの存在区画の更新
+	function setPacChunk(move_x,move_y){
+		switch(move_x){
+		case 1:
+			pac_chunk=pac_chunk+1;
+			break;
+		case -1:
+			pac_chunk=pac_chunk-1;
+			break;
+		}
+		switch(move_y){
+		case 1:
+			pac_chunk=pac_chunk+CHUNK_X;
+			break;
+		case -1:
+			pac_chunk=pac_chunk-CHUNK_X;
+			break;
+		}
+	}
+	
+	
+	function drawAlien(cx,cy){
+		ctx.fillStyle="#FF00FF";//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+		
+	}
+	
+	
+	
+	function Alien(){
+	switch (rand) {
+		case 0://左
+			
+			alien_tmp_move_x = -1;//x座標を1px減らす（左に動かす）
+			alien_tmp_move_y = 0;
+			break;
+		case 1://右
+			
+			alien_tmp_move_x = 1;//x座標を1px増やす（右に動かす）
+			alien_tmp_move_y = 0;
+			break;
+		case 2:////上
+			
+			alien_tmp_move_x = 0;
+			alien_tmp_move_y = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 3://下
+			
+			alien_tmp_move_x = 0;
+			alien_tmp_move_y = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function AliendecideMoving(){
+		if(alien_x % (p_radius*2) == 0 && alien_y % (p_radius*2) == 0){
+			AliencollisionDetection(alien_chunk);
+			
+			alien_move_x = alien_tmp_move_x;
+			alien_move_y = alien_tmp_move_y;
+			setAlienChunk(alien_move_x , alien_move_y);
+		}
+	}
+	
+	//壁のあたり判定の決定
+	function AliencollisionDetection(alien_chunk){
+		switch (rand) {
+			case 1://右
+			
+				if(chunk[alien_chunk+1] == 0){//前方が壁のとき
+						rand = Math.floor( Math.random() * 2)+2;//2:上,3:下
+						alien_tmp_move_x = 0;
+						
+						switch(rand){
+							case 2:
+									if(chunk[alien_chunk-CHUNK_X] == 0){
+									alien_tmp_move_y = 1;
+									rand=3;
+								}else{
+									alien_tmp_move_y = -1;
+									rand=2;
+								}
+								break;
+							default:
+								if(chunk[alien_chunk+CHUNK_X] == 0){
+									alien_tmp_move_y = -1;
+									rand=2;
+								}else{
+									alien_tmp_move_y = 1;
+									rand=3;
+								}
+								break;
+						}
+					}else{
+			
+						switch(chunk[alien_chunk+CHUNK_X] +chunk[alien_chunk-CHUNK_X] ){
+							case 0://進行方向（右）しか通路がなかったとき
+							
+								rand=rand;
+								break;
+							
+							default://通路が枝分かれになったとき
+							
+								rand2 = Math.floor( Math.random() * 3);
+								switch(alien_right[rand2]){
+									case 2://上が選ばれたとき上に方向転換
+										alien_tmp_move_x = 0;
+										if(chunk[alien_chunk-CHUNK_X] == 0){//上に壁があるかどうか
+												alien_tmp_move_y = 1;
+												rand=3;
+										}else{
+												alien_tmp_move_y = -1;
+												rand=2;
+										}
+										break;
+										
+									case 3://下が選ばれたとき上に方向転換
+										alien_tmp_move_x = 0;
+										if(chunk[alien_chunk+CHUNK_X] == 0){
+											alien_tmp_move_y = -1;
+											rand=2;
+										}else{
+											alien_tmp_move_y = 1;
+											rand=3;
+										}
+										break;
+									
+									default:
+										rand=rand;
+										break;
+								}
+							break;
+					}
+				}
+			break;
+			
+		
+		case 0:
+			if(chunk[alien_chunk-1] == 0){
+				rand2 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+				alien_tmp_move_x = 0;
+				switch(rand){
+					case 2:
+						if(chunk[alien_chunk-CHUNK_X] == 0){
+							alien_tmp_move_y = 1;
+							rand=3;
+						}else{
+							alien_tmp_move_y = -1;
+							rand=2;
+						}
+						break;
+					default:
+						if(chunk[alien_chunk+CHUNK_X] == 0){
+							alien_tmp_move_y = -1;
+							rand=2;
+						}else{
+							alien_tmp_move_y = 1;
+							rand=3;
+						}
+						break;
+				}
+			}else{
+			
+						switch(chunk[alien_chunk+CHUNK_X] +chunk[alien_chunk-CHUNK_X] ){
+							case 0://進行方向（左）しか通路がなかったとき
+							
+								rand=rand;
+								break;
+							
+							default://通路が枝分かれになったとき
+							
+								rand2 = Math.floor( Math.random() * 3);
+								switch(alien_left[rand2]){
+									case 2://上が選ばれたとき上に方向転換
+										alien_tmp_move_x = 0;
+										if(chunk[alien_chunk-CHUNK_X] == 0){//上に壁があるかどうか
+												alien_tmp_move_y = 1;
+												rand=3;
+										}else{
+												alien_tmp_move_y = -1;
+												rand=2;
+										}
+										break;
+										
+									case 3://下が選ばれたとき上に方向転換
+										alien_tmp_move_x = 0;
+										if(chunk[alien_chunk+CHUNK_X] == 0){
+											alien_tmp_move_y = -1;
+											rand=2;
+										}else{
+											alien_tmp_move_y = 1;
+											rand=3;
+										}
+										break;
+									
+									default://左のときはそのまま
+										rand=rand;
+										break;
+								}
+							break;
+					}
+				}
+			break;
+			
+		case 3://下
+			if(chunk[alien_chunk+CHUNK_X] == 0){//下が壁
+				rand = Math.floor( Math.random() * 2);//0:左,1:右
+				alien_tmp_move_y = 0;
+				switch(rand){
+					case 0:
+						if(chunk[alien_chunk-1] == 0){
+							alien_tmp_move_x = 1;
+							rand=1;
+						}else{
+							alien_tmp_move_x = -1;
+							rand=0;
+						}
+						break;
+					default:
+						if(chunk[alien_chunk+1] == 0){
+							alien_tmp_move_x = -1;
+							rand=0;
+						}else{
+							alien_tmp_move_x = 1;
+							rand=1;
+						}
+						break;
+				}
+				
+			}else{
+			
+						switch(chunk[alien_chunk-1] +chunk[alien_chunk+1] ){
+							case 0://進行方向（下）しか通路がなかったとき
+							
+								rand=rand;
+								break;
+							
+							default://通路が枝分かれになったとき
+							
+								rand2 = Math.floor( Math.random() * 3);
+								switch(alien_down[rand2]){
+									case 0://左が選ばれたとき上に方向転換
+										alien_tmp_move_y = 0;
+										if(chunk[alien_chunk-1] == 0){//左に壁があるかどうか
+												alien_tmp_move_x = 1;
+												rand=1;
+										}else{
+												alien_tmp_move_x = -1;
+												rand=0;
+										}
+										break;
+										
+									case 1://右が選ばれたとき上に方向転換
+										alien_tmp_move_y = 0;
+										if(chunk[alien_chunk+1] == 0){
+											alien_tmp_move_x = -1;
+											rand=0;
+										}else{
+											alien_tmp_move_x = 1;
+											rand=1;
+										}
+										break;
+									
+									default:
+										rand=rand;
+										break;
+								}
+							break;
+					}
+			}
+			break;
+			
+		case 2:
+			if(chunk[alien_chunk-CHUNK_X] == 0){
+				alien_tmp_move_y = 0;
+				rand = Math.floor( Math.random() * 2);
+				switch(rand){
+					case 0:
+						if(chunk[alien_chunk-1] == 0){
+							alien_tmp_move_x = 1;
+							rand=1;
+						}else{
+							alien_tmp_move_x = -1;
+							rand=0;
+						}
+						break;
+					default:
+						if(chunk[alien_chunk+1] == 0){
+							alien_tmp_move_x = -1;
+							rand=0;
+						}else{
+							alien_tmp_move_x = 1;
+							rand=1;
+						}
+						break;
+				}
+
+			}else{
+			
+						switch(chunk[alien_chunk-1] +chunk[alien_chunk+1] ){
+							case 0://進行方向（上）しか通路がなかったとき
+							
+								rand=rand;
+								break;
+							
+							default://通路が枝分かれになったとき
+							
+								rand2 = Math.floor( Math.random() * 3);
+								switch(alien_up[rand2]){
+									case 0://左が選ばれたとき上に方向転換
+										alien_tmp_move_y = 0;
+										if(chunk[alien_chunk-1] == 0){//左に壁があるかどうか
+												alien_tmp_move_x = 1;
+												rand=1;
+										}else{
+												alien_tmp_move_x = -1;
+												rand=0;
+										}
+										break;
+										
+									case 1://右が選ばれたとき上に方向転換
+										alien_tmp_move_y = 0;
+										if(chunk[alien_chunk+1] == 0){
+											alien_tmp_move_x = -1;
+											rand=0;
+										}else{
+											alien_tmp_move_x = 1;
+											rand=1;
+										}
+										break;
+									
+									default:
+										rand=rand;
+										break;
+								}
+							break;
+					}
+			}
+			break;
+			}
+		}
+	
+	//エイリアンの存在区画の更新
+	function setAlienChunk(alien_move_x,alien_move_y){
+		switch(alien_move_x){
+		case 1:
+			alien_chunk=alien_chunk+1;
+			break;
+		case -1:
+			alien_chunk=alien_chunk-1;
+			break;
+		}
+		switch(alien_move_y){
+		case 1:
+			alien_chunk=alien_chunk+CHUNK_X;
+			break;
+		case -1:
+			alien_chunk=alien_chunk-CHUNK_X;
+			break;
+		}
+	}
+	
+	
+	
+</script>
+</head>
+<body onload="start()">
+	
+</body>
+</html>
