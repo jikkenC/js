@@ -18,15 +18,19 @@
     <button id="start">スタート</button>  
     </div>
     <div class="box1">
+        <img src=""></img>
         <button align="right" id="next_person1">次の人1</button>
     </div>
     <div class="box2">
+        <img src=""></img>
         <button align="right" id="next_person2">次の人2</button>
     </div>
     <div class="box3">
+        <img src=""></img>
         <button align="right" id="next_person3">次の人3</button>
     </div>
     <div class="box4">
+        <img src=""></img>
         <button align="right" id="next_person4">次の人4</button>
     </div>
     
@@ -431,10 +435,10 @@ $("#next_person4").on("click", function(){
      var screen_name = "mrboo6111";
      getPeople(url, screen_name);
      f.promise().then(function(){
-         $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
-         $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
-         $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
-         $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+         $(".box1").append('<img src="' + imgsrc[0] + '" id = "src1"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+         $(".box2").append('<img src="' + imgsrc[1] + '" id = "src2"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+         $(".box3").append('<img src="' + imgsrc[2] + '" id = "src3"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+         $(".box4").append('<img src="' + imgsrc[3] + '" id = "src4"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
      });
  });
     
@@ -473,7 +477,7 @@ chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 var cv = document.getElementById("pacman");
 var ctx = cv.getContext("2d");
 //パックマンスタートの諸々
-const p_radius = 20;
+const p_radius = 24;
 pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
 pac_x = p_radius*2*3;/*初期座標x*/
 pac_y = p_radius*2*3;/*初期座標y*/
@@ -575,35 +579,38 @@ var alien_down=[0,1,3];
 		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
-        console.log(pac_friends);
 		//1
-		ctx.clearRect (alien_x1 - p_radius,alien_y1- p_radius , p_radius*2 , p_radius*2);
+		//ctx.clearRect (alien_x1 - p_radius,alien_y1- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection1();
 		Alien1();
 		AliendecideMoving1();
-		drawAlien1((alien_x1+=alien_move_x1)-p_radius, (alien_y1+=alien_move_y1)-p_radius);
         drawTweet(alien_color1,1,alien_previous_x1,alien_previous_y1);
+		drawAlien1((alien_x1+=alien_move_x1)-p_radius, (alien_y1+=alien_move_y1)-p_radius);
+        
 		//2
 		ctx.clearRect (alien_x2 - p_radius,alien_y2- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection2();
 		Alien2();
 		AliendecideMoving2();
-		drawAlien2((alien_x2+=alien_move_x2)-p_radius, (alien_y2+=alien_move_y2)-p_radius);
         drawTweet(alien_color2,2,alien_previous_x2,alien_previous_y2);
+		drawAlien2((alien_x2+=alien_move_x2)-p_radius, (alien_y2+=alien_move_y2)-p_radius);
+        
 		//3
 		ctx.clearRect (alien_x3 - p_radius,alien_y3- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection3();
 		Alien3();
 		AliendecideMoving3();
-		drawAlien3((alien_x3+=alien_move_x3)-p_radius, (alien_y3+=alien_move_y3)-p_radius);
         drawTweet(alien_color3,3,alien_previous_x3,alien_previous_y3);
+		drawAlien3((alien_x3+=alien_move_x3)-p_radius, (alien_y3+=alien_move_y3)-p_radius);
+        
 		//4
 		ctx.clearRect (alien_x4 - p_radius,alien_y4- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection4();
 		Alien4();
 		AliendecideMoving4();
-		drawAlien4((alien_x4+=alien_move_x4)-p_radius, (alien_y4+=alien_move_y4)-p_radius);
         drawTweet(alien_color4,4,alien_previous_x4,alien_previous_y4);
+		drawAlien4((alien_x4+=alien_move_x4)-p_radius, (alien_y4+=alien_move_y4)-p_radius);
+        
 	}
 	
 		//壁の描画関数
@@ -614,7 +621,7 @@ var alien_down=[0,1,3];
 	
     function drawTweet(alien_color,alien_number,x,y){
 		ctx.fillStyle=alien_color;
-		ctx.fillRect(x*40,y*40,10,10);
+		ctx.fillRect(x*p_radius*2,y*p_radius*2,10,10);
         chunk[CHUNK_X*y+x]=1+alien_number;
 	}
 	
@@ -788,10 +795,11 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien1(cx,cy){
-		ctx.beginPath();
-		ctx.fillStyle=alien_color1;//図形の色
-		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
-		ctx.closePath();
+        ctx.drawImage(document.getElementById("src1"), cx, cy)
+		//ctx.beginPath();
+		//ctx.fillStyle=alien_color1;//図形の色
+		//ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+		//ctx.closePath();
 	}
 	
 	
@@ -1018,10 +1026,11 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien2(cx,cy){
-		ctx.beginPath();
-		ctx.fillStyle=alien_color2;//図形の色
-		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
-		ctx.closePath();
+        ctx.drawImage(document.getElementById("src2"), cx, cy)
+		//ctx.beginPath();
+		//ctx.fillStyle=alien_color2;//図形の色
+		//ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+		//ctx.closePath();
 	}
 	
 	
@@ -1248,8 +1257,9 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien3(cx,cy){
-		ctx.fillStyle=alien_color3;//図形の色
-		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+        ctx.drawImage(document.getElementById("src3"), cx, cy)
+		//ctx.fillStyle=alien_color3;//図形の色
+		//ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
 	
@@ -1478,8 +1488,9 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien4(cx,cy){
-		ctx.fillStyle=alien_color4;//図形の色
-		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+        ctx.drawImage(document.getElementById("src4"), cx, cy)
+		//ctx.fillStyle=alien_color4;//図形の色
+		//ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
 	
@@ -1701,6 +1712,6 @@ var alien_down=[0,1,3];
 </script>
 </head>
 <body>
-	<IMG src=imgsrc[0] id="test" style="position:absolute;>
+	
 </body>
 </html>
