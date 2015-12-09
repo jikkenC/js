@@ -15,9 +15,7 @@
     <!-- UI部分 ↓ -->
     <input type="button" name="idk" value="game start!!" onClick="start()">
     
-    <button id="start">スタート</button>
-    <div class="box1">
-        <button align="right" id="next_person1">次の人1</button>    
+    <button id="start">スタート</button>  
     </div>
     <div class="box1">
         <button align="right" id="next_person1">次の人1</button>
@@ -487,55 +485,71 @@ var move_x;
 var move_y;
 var tmp_move_x = 0;
 var tmp_move_y = 0;
+pac_friends=100;
     
     
 //エイリアンのデータ
 //1
-    
+const alien_color1 = "#FF00FF";    
 alien_chunk1 = CHUNK_X*3+4;
 alien_x1 = p_radius*2*4;/*初期座標x*/
 alien_y1 = p_radius*2*3;/*初期座標y*/
-var alien_move_x1;
-var alien_move_y1;
+var alien_move_x1=0;
+var alien_move_y1=0;
 var alien_tmp_move_x1 = 0;
 var alien_tmp_move_y1 = 0;
 var rand1= Math.floor( Math.random() * 2);//エイリアンの方向　
 var rand12;//通路が枝分かれの際使用
+var	alien_previous_x1=4;
+var alien_previous_y1=3;
+    
 //2
+const alien_color2 = "#FF0000";
 alien_chunk2 = CHUNK_X*3+5;
 alien_x2 = p_radius*2*5;/*初期座標x*/
 alien_y2 = p_radius*2*3;/*初期座標y*/
-var alien_move_x2;
-var alien_move_y2;
+var alien_move_x2=0;
+var alien_move_y2=0;
 var alien_tmp_move_x2 = 0;
 var alien_tmp_move_y2 = 0;
 var rand2= Math.floor( Math.random() * 2);//エイリアンの方向　
 var rand22;//通路が枝分かれの際使用
+var	alien_previous_x2=5;
+var alien_previous_y2=3;
+    
 //3
+const alien_color3 = "#0000FF";
 alien_chunk3 = CHUNK_X*3+6;
 alien_x3 = p_radius*2*6;/*初期座標x*/
 alien_y3 = p_radius*2*3;/*初期座標y*/
-var alien_move_x3;
-var alien_move_y3;
+var alien_move_x3=0;
+var alien_move_y3=0;
 var alien_tmp_move_x3 = 0;
 var alien_tmp_move_y3 = 0;
 var rand3= Math.floor( Math.random() * 2);//エイリアンの方向　
 var rand32;//通路が枝分かれの際使用
+var	alien_previous_x3=6;
+var alien_previous_y3=3;
+    
 //4
+const alien_color4 = "#008000";
 alien_chunk4 = CHUNK_X*3+7;
 alien_x4 = p_radius*2*7;/*初期座標x*/
 alien_y4 = p_radius*2*3;/*初期座標y*/
-var alien_move_x4;
-var alien_move_y4;
+var alien_move_x4=0;
+var alien_move_y4=0;
 var alien_tmp_move_x4 = 0;
 var alien_tmp_move_y4 = 0;
 var rand4= Math.floor( Math.random() * 2);//エイリアンの方向　
 var rand42;//通路が枝分かれの際使用
+var	alien_previous_x4=7;
+var alien_previous_y4=3;
 
 var alien_right=[1,2,3];
 var alien_left=[0,2,3];
 var alien_up=[0,1,2];
 var alien_down=[0,1,3];
+    
 
 	function start() {
 	
@@ -566,24 +580,28 @@ var alien_down=[0,1,3];
 		Alien1();
 		AliendecideMoving1();
 		drawAlien1((alien_x1+=alien_move_x1)-p_radius, (alien_y1+=alien_move_y1)-p_radius);
+        drawTweet(alien_color1,alien_previous_x1*40,alien_previous_y1*40);
 		//2
 		ctx.clearRect (alien_x2 - p_radius,alien_y2- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection2();
 		Alien2();
 		AliendecideMoving2();
 		drawAlien2((alien_x2+=alien_move_x2)-p_radius, (alien_y2+=alien_move_y2)-p_radius);
+        drawTweet(alien_color2,alien_previous_x2*40,alien_previous_y2*40);
 		//3
 		ctx.clearRect (alien_x3 - p_radius,alien_y3- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection3();
 		Alien3();
 		AliendecideMoving3();
 		drawAlien3((alien_x3+=alien_move_x3)-p_radius, (alien_y3+=alien_move_y3)-p_radius);
+        drawTweet(alien_color3,alien_previous_x3*40,alien_previous_y3*40);
 		//4
 		ctx.clearRect (alien_x4 - p_radius,alien_y4- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection4();
 		Alien4();
 		AliendecideMoving4();
 		drawAlien4((alien_x4+=alien_move_x4)-p_radius, (alien_y4+=alien_move_y4)-p_radius);
+        drawTweet(alien_color4,alien_previous_x4*40,alien_previous_y4*40);
 	}
 	
 		//壁の描画関数
@@ -592,6 +610,11 @@ var alien_down=[0,1,3];
 		ctx.fillRect(chunk_x - p_radius ,chunk_y - p_radius,p_radius*2,p_radius*2); 
 	}
 	
+    function drawTweet(alien_color,x,y){
+		ctx.fillStyle=alien_color;
+		ctx.fillRect(x,y,10,10);
+        chunk[CHUNK_X*y+x]=2;
+	}
 	
 	//パックマンの形状を表すメソッド
 	//drawPacman(2D, 中心のx座標, 中心のy座標,　口の角度):
@@ -750,7 +773,11 @@ var alien_down=[0,1,3];
 	//パックマンとエイリアンのあたり判定
 		function checkAlienDetection1(){
 		if(Math.abs(pac_x - alien_x1) < p_radius*2 && Math.abs(pac_y - alien_y1) < p_radius*2){
-            gameOver();
+            if(friends_count[0] > pac_friends){
+                gameOver();   
+            }else{
+                
+            }
 		}
 	}
 	
@@ -791,8 +818,9 @@ var alien_down=[0,1,3];
 	//区画間の移動方向の決定
 	function AliendecideMoving1(){
 		if(alien_x1 % (p_radius*2) == 0 && alien_y1 % (p_radius*2) == 0){
-			AliencollisionDetection1(alien_chunk1);
-			
+            alien_previous_x1=alien_previous_x1+alien_move_x1;
+			alien_previous_y1=alien_previous_y1+alien_move_y1;
+			AliencollisionDetection1(alien_chunk1);	
 			alien_move_x1 = alien_tmp_move_x1;
 			alien_move_y1 = alien_tmp_move_y1;
 			setAlienChunk1(alien_move_x1 , alien_move_y1);
@@ -975,7 +1003,11 @@ var alien_down=[0,1,3];
 	//パックマンとエイリアンのあたり判定
 		function checkAlienDetection2(){
 		if(Math.abs(pac_x - alien_x2) < p_radius*2 && Math.abs(pac_y - alien_y2) < p_radius*2){
-            gameOver();
+             if(friends_count[1] > pac_friends){
+                gameOver();   
+            }else{
+                
+            }
 		}
 	}
 	
@@ -1016,8 +1048,9 @@ var alien_down=[0,1,3];
 	//区画間の移動方向の決定
 	function AliendecideMoving2(){
 		if(alien_x2 % (p_radius*2) == 0 && alien_y2 % (p_radius*2) == 0){
+            alien_previous_x2=alien_previous_x2+alien_move_x2;
+			alien_previous_y2=alien_previous_y2+alien_move_y2;
 			AliencollisionDetection2(alien_chunk2);
-			
 			alien_move_x2 = alien_tmp_move_x2;
 			alien_move_y2 = alien_tmp_move_y2;
 			setAlienChunk2(alien_move_x2 , alien_move_y2);
@@ -1200,7 +1233,11 @@ var alien_down=[0,1,3];
 	//パックマンとエイリアンのあたり判定
 		function checkAlienDetection3(){
 		if(Math.abs(pac_x - alien_x3) < p_radius*2 && Math.abs(pac_y - alien_y3) < p_radius*2){
-            gameOver();
+             if(friends_count[2] > pac_friends){
+                gameOver();   
+            }else{
+                
+            }
 		}
 	}
 	
@@ -1240,8 +1277,9 @@ var alien_down=[0,1,3];
 	//区画間の移動方向の決定
 	function AliendecideMoving3(){
 		if(alien_x3 % (p_radius*2) == 0 && alien_y3 % (p_radius*2) == 0){
+            alien_previous_x3=alien_previous_x3+alien_move_x3;
+			alien_previous_y3=alien_previous_y3+alien_move_y3;
 			AliencollisionDetection3(alien_chunk3);
-			
 			alien_move_x3 = alien_tmp_move_x3;
 			alien_move_y3 = alien_tmp_move_y3;
 			setAlienChunk3(alien_move_x3 , alien_move_y3);
@@ -1425,7 +1463,11 @@ var alien_down=[0,1,3];
 		//パックマンとエイリアンのあたり判定
 		function checkAlienDetection4(){
 		if(Math.abs(pac_x - alien_x4) < p_radius*2 && Math.abs(pac_y - alien_y4) < p_radius*2){
-			gameOver();
+            if(friends_count[3] > pac_friends){
+                gameOver();   
+            }else{
+                
+            }
 		}
 	}
 	
@@ -1465,8 +1507,9 @@ var alien_down=[0,1,3];
 	//区画間の移動方向の決定
 	function AliendecideMoving4(){
 		if(alien_x4 % (p_radius*2) == 0 && alien_y4 % (p_radius*2) == 0){
+            alien_previous_x4=alien_previous_x4+alien_move_x4;
+			alien_previous_y4=alien_previous_y4+alien_move_y4;
 			AliencollisionDetection4(alien_chunk4);
-			
 			alien_move_x4 = alien_tmp_move_x4;
 			alien_move_y4 = alien_tmp_move_y4;
 			setAlienChunk4(alien_move_x4 , alien_move_y4);
