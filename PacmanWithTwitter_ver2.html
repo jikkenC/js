@@ -2,7 +2,7 @@
 <head>
 <meta charset-"utf-8"/>
 
-    !-- ライブラリの読み込み部分 ↓ -->
+    <!-- ライブラリの読み込み部分 ↓ -->
     <!-- jqueryを読み込む -->
     <script src="./jquery.js"></script>
  
@@ -13,6 +13,7 @@
     
     
     <!-- UI部分 ↓ -->
+    <input type="button" name="idk" value="game start!!" onClick="start()">
     
     <button id="start">スタート</button>
     <div class="box1">
@@ -70,6 +71,7 @@
 		
 	};
     
+    nicoscreen.set(obj);
     
     /// //////////////////////////////////////
 var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
@@ -109,6 +111,337 @@ var s_flag = 0;
 var count = 4; // 表示する件数
     
 ///////////////////////////////////////////////
+    
+// Twitter APIを使用してフォローのうちの4人のIDを取得する部分
+function getPeople(action, screen_name) {
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/friends/ids.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            //user_id: 1234, //ユーザ名
+            screen_name: "mrboo6111", //ユーザ名
+            count: 4,//個数
+            callback: "setPeople"
+        }
+    };
+
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
+//ユーザのIDを指定して、JSONデータ(フォロー数・フォロワー数)を取得する
+function getInfo(id){
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/statuses/user_timeline.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            user_id: id, //ユーザ名
+            //screen_name: "mrboo6111", //ユーザ名
+            count: 1,//個数
+            callback: "setInfo"
+        }
+    };
+    
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
+//JSONデータの中から名前・フォロー数・フォロワー数・ツイート数を取得する
+function setInfo(data){
+    //console.log(data);
+    var result = data[0].user;
+    temp_name = result.name;
+    temp_imgsrc = result.profile_image_url;
+    temp_followers_count = result.followers_count;
+    temp_friends_count = result.friends_count;
+    temp_tweetNum = result.statuses_count;
+    temp_text = data[0].text;
+    if(g_flag == 1){
+        g.resolve();
+        g_flag = 0;
+    }
+    if(p_flag == 1){
+        name1 = result.name;
+        imgsrc[0] = result.profile_image_url;
+        followers_count[0] = result.followers_count;
+        friends_count[0] = result.friends_count;
+        tweetNum[0] = result.statuses_count;
+        text1 = data[0].text;
+        p.resolve();
+        p_flag = 0;
+    }else if(q_flag == 1){
+        name2 = result.name;
+        imgsrc[1] = result.profile_image_url;
+        followers_count[1] = result.followers_count;
+        friends_count[1] = result.friends_count;
+        tweetNum[1] = result.statuses_count;
+        text2 = data[0].text;
+        q.resolve();
+        q_flag = 0;
+    }else if(r_flag == 1){
+        name3 = result.name;
+        imgsrc[2] = result.profile_image_url;
+        followers_count[2] = result.followers_count;
+        friends_count[2] = result.friends_count;
+        tweetNum[2] = result.statuses_count;
+        text3 = data[0].text;
+        r.resolve();
+        r_flag = 0;
+    }else if(s_flag == 1){
+        name4 = result.name;
+        imgsrc[3] = result.profile_image_url;
+        followers_count[3] = result.followers_count;
+        friends_count[3] = result.friends_count;
+        tweetNum[3] = result.statuses_count;
+        text4 = data[0].text;
+        s.resolve();
+        s_flag = 0;
+    }
+}
+    
+// JSONデータから4人のIDを取得する
+function setPeople(data){ // 引数(data)に取得したデータが入ってくる
+    for(var i=0;i<4;i++){
+        id[i] = data.ids[i]; // 取得したデータから、メソッドチェーンで必要なものを取得
+    }
+    var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+    p = new $.Deferred();
+    p_flag = 1;
+    getInfo(id[0]);
+    p.promise().then(function(){
+        q = new $.Deferred();
+        q_flag = 1;
+        getInfo(id[1])
+        q.promise().then(function(){
+            r = new $.Deferred();
+            r_flag = 1;
+            getInfo(id[2]);
+            r.promise().then(function(){
+                s = new $.Deferred();
+                s_flag = 1;
+                getInfo(id[3]);
+                s.promise().then(function(){
+                    f.resolve();
+                });
+            });
+        });
+    });
+}
+    
+// Twitter APIを使用して次の人の情報(今回はID)を取得する部分
+function getNextperson(action, id) {
+
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/friends/ids.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            user_id: id, //ユーザ名
+            //screen_name: "mrboo6111", //ユーザ名
+            count: 1,//個数
+            callback: "rewrite"
+        }
+    };
+    
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
+// UIの更新
+function rewrite(data){ // 引数(data)に取得したデータが入ってくる
+    //console.log(data);
+    var result = data.ids[0]; // 取得したデータから、メソッドチェーンで必要なものを取得
+    //console.log(result);
+    tempId = result; // id
+    d.resolve();
+}
+            
+ $("#next_person1").on("click", function(){
+     //console.log(id[0]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box1 img").remove();
+     $(".box1 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[0]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[0] = tempId;
+         console.log('id[0]');
+         console.log(id[0]);
+         getInfo(id[0]);
+         g.promise().then(function(){
+             console.log(temp_name);
+             name1 = temp_name;
+             imgsrc[0] = temp_imgsrc;
+             friends_count[0] = temp_friends_count;
+             followers_count[0] = temp_followers_count;
+             tweetNum[0] = temp_tweetNum;
+             text1 = temp_text;
+             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+         });
+     });
+ });
+    
+$("#next_person2").on("click", function(){
+     //console.log(id[1]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box2 img").remove();
+     $(".box2 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[1]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[1] = tempId;
+         console.log('id[1]');
+         console.log(id[1]);
+         getInfo(id[1]);
+         g.promise().then(function(){
+             name2 = temp_name;
+             imgsrc[1] = temp_imgsrc;
+             friends_count[1] = temp_friends_count;
+             followers_count[1] = temp_followers_count;
+             tweetNum[1] = temp_tweetNum;
+             text2 = temp_text;
+             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+         });
+     });
+ });
+    
+$("#next_person3").on("click", function(){
+     //console.log(id[2]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box3 img").remove();
+     $(".box3 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[2]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[2] = tempId;
+         console.log('id[2]');
+         console.log(id[2]);
+         getInfo(id[2]);
+         g.promise().then(function(){
+             name3 = temp_name;
+             imgsrc[2] = temp_imgsrc;
+             friends_count[2] = temp_friends_count;
+             followers_count[2] = temp_followers_count;
+             tweetNum[2] = temp_tweetNum;
+             text3 = temp_text;
+             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+         });
+     });
+ });
+    
+$("#next_person4").on("click", function(){
+     //console.log(id[3]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box4 img").remove();
+     $(".box4 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[3]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[3] = tempId;
+         console.log('id[3]');
+         console.log(id[3]);
+         getInfo(id[3]);
+         g.promise().then(function(){
+             name4 = temp_name;
+             imgsrc[3] = temp_imgsrc;
+             friends_count[3] = temp_friends_count;
+             followers_count[3] = temp_followers_count;
+             tweetNum[3] = temp_tweetNum;
+             text = temp_text;
+             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+         });
+     });
+ });
+     
+ $("#start").on("click", function(){
+     f = new $.Deferred();
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     var screen_name = "mrboo6111";
+     getPeople(url, screen_name);
+     f.promise().then(function(){
+         $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+         $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+         $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+         $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+     });
+ });
+    
+    	
+
 /////////////////////////////////////////
     //パックマンの変数
 const UP = 0;
@@ -154,8 +487,11 @@ var move_x;
 var move_y;
 var tmp_move_x = 0;
 var tmp_move_y = 0;
+    
+    
 //エイリアンのデータ
 //1
+    
 alien_chunk1 = CHUNK_X*3+4;
 alien_x1 = p_radius*2*4;/*初期座標x*/
 alien_y1 = p_radius*2*3;/*初期座標y*/
@@ -211,8 +547,7 @@ var alien_down=[0,1,3];
 	}
 	
 	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
-	timerID_1 = setInterval ('checkPacmanMouthMove()', 20);
-	timerID_2 = setInterval ('reDraw()', 5);
+	timerID_1 = setInterval ('reDraw()', 5);
 	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
 	//true or false: イベントの優先順位
 	window.addEventListener ('keydown' , keydownfunc , false);
@@ -220,6 +555,7 @@ var alien_down=[0,1,3];
 	
 	//再描画のメソッド
 	function reDraw(){
+        checkPacmanMouthMove();
 		//clearRect(): 指定範囲内を透明にする
 		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
@@ -414,7 +750,7 @@ var alien_down=[0,1,3];
 	//パックマンとエイリアンのあたり判定
 		function checkAlienDetection1(){
 		if(Math.abs(pac_x - alien_x1) < p_radius*2 && Math.abs(pac_y - alien_y1) < p_radius*2){
-			console.log("ouch!");
+            gameOver();
 		}
 	}
 	
@@ -639,7 +975,7 @@ var alien_down=[0,1,3];
 	//パックマンとエイリアンのあたり判定
 		function checkAlienDetection2(){
 		if(Math.abs(pac_x - alien_x2) < p_radius*2 && Math.abs(pac_y - alien_y2) < p_radius*2){
-			console.log("ouch!");
+            gameOver();
 		}
 	}
 	
@@ -864,7 +1200,7 @@ var alien_down=[0,1,3];
 	//パックマンとエイリアンのあたり判定
 		function checkAlienDetection3(){
 		if(Math.abs(pac_x - alien_x3) < p_radius*2 && Math.abs(pac_y - alien_y3) < p_radius*2){
-			console.log("ouch!");
+            gameOver();
 		}
 	}
 	
@@ -1089,7 +1425,7 @@ var alien_down=[0,1,3];
 		//パックマンとエイリアンのあたり判定
 		function checkAlienDetection4(){
 		if(Math.abs(pac_x - alien_x4) < p_radius*2 && Math.abs(pac_y - alien_y4) < p_radius*2){
-			console.log("ouch!");
+			gameOver();
 		}
 	}
 	
@@ -1306,352 +1642,16 @@ var alien_down=[0,1,3];
 			break;
 		}
 	}
-    ///////////////////////////////////////////// //////////////////////////////////////////////
     
-// Twitter APIを使用してフォローのうちの4人のIDを取得する部分
-function getPeople(action, screen_name) {
-    var accessor = {
-        consumerSecret: consumerSecret,
-        tokenSecret: tokenSecret
-    };
-
-    // 送信するパラメータを連想配列で作成
-    var message = {
-        method: "GET", // リクエストの種類
-        action: "https://api.twitter.com/1.1/friends/ids.json",
-        parameters: {
-            oauth_version: "1.0",
-            oauth_signature_method: "HMAC-SHA1",
-            oauth_consumer_key: consumerKey, // コンシューマーキー
-            oauth_token: accessToken, // アクセストークン
-            //user_id: 1234, //ユーザ名
-            screen_name: "mrboo6111", //ユーザ名
-            count: 4,//個数
-            callback: "setPeople"
-        }
-    };
-
-    // OAuth認証関係
-    OAuth.setTimestampAndNonce(message);
-    OAuth.SignatureMethod.sign(message, accessor);
-    var url = OAuth.addToURL(message.action, message.parameters);
-
-    // ajaxによる通信
-    $.ajax({
-        type: message.method,
-        url: url, // リクエスト先のURL
-        dataType: "jsonp",
-        jsonp: false,
-        cache: true,
-    });
-}
     
-//ユーザのIDを指定して、JSONデータ(フォロー数・フォロワー数)を取得する
-function getInfo(id){
-    var accessor = {
-        consumerSecret: consumerSecret,
-        tokenSecret: tokenSecret
-    };
-
-    // 送信するパラメータを連想配列で作成
-    var message = {
-        method: "GET", // リクエストの種類
-        action: "https://api.twitter.com/1.1/statuses/user_timeline.json",
-        parameters: {
-            oauth_version: "1.0",
-            oauth_signature_method: "HMAC-SHA1",
-            oauth_consumer_key: consumerKey, // コンシューマーキー
-            oauth_token: accessToken, // アクセストークン
-            user_id: id, //ユーザ名
-            //screen_name: "mrboo6111", //ユーザ名
-            count: 1,//個数
-            callback: "setInfo"
-        }
-    };
-    
-    // OAuth認証関係
-    OAuth.setTimestampAndNonce(message);
-    OAuth.SignatureMethod.sign(message, accessor);
-    var url = OAuth.addToURL(message.action, message.parameters);
-
-    // ajaxによる通信
-    $.ajax({
-        type: message.method,
-        url: url, // リクエスト先のURL
-        dataType: "jsonp",
-        jsonp: false,
-        cache: true,
-    });
-}
-    
-//JSONデータの中から名前・フォロー数・フォロワー数・ツイート数を取得する
-function setInfo(data){
-    //console.log(data);
-    var result = data[0].user;
-    temp_name = result.name;
-    temp_imgsrc = result.profile_image_url;
-    temp_followers_count = result.followers_count;
-    temp_friends_count = result.friends_count;
-    temp_tweetNum = result.statuses_count;
-    temp_text = data[0].text;
-    if(g_flag == 1){
-        g.resolve();
-        g_flag = 0;
+    function gameOver(){
+        console.log("gameover");
+        clearInterval(timerID_1);
     }
-    if(p_flag == 1){
-        name1 = result.name;
-        imgsrc[0] = result.profile_image_url;
-        followers_count[0] = result.followers_count;
-        friends_count[0] = result.friends_count;
-        tweetNum[0] = result.statuses_count;
-        text1 = data[0].text;
-        console.log(followers_count[0]);
-        console.log(friends_count[0]);
-        console.log(tweetNum[0]);
-        p.resolve();
-        p_flag = 0;
-    }else if(q_flag == 1){
-        name2 = result.name;
-        imgsrc[1] = result.profile_image_url;
-        followers_count[1] = result.followers_count;
-        friends_count[1] = result.friends_count;
-        tweetNum[1] = result.statuses_count;
-        text2 = data[0].text;
-        console.log(followers_count[1]);
-        console.log(friends_count[1]);
-        console.log(tweetNum[1]);
-        q.resolve();
-        q_flag = 0;
-    }else if(r_flag == 1){
-        name3 = result.name;
-        imgsrc[2] = result.profile_image_url;
-        followers_count[2] = result.followers_count;
-        friends_count[2] = result.friends_count;
-        tweetNum[2] = result.statuses_count;
-        text3 = data[0].text;
-        console.log(followers_count[2]);
-        console.log(friends_count[2]);
-        console.log(tweetNum[2]);
-        r.resolve();
-        r_flag = 0;
-    }else if(s_flag == 1){
-        name4 = result.name;
-        imgsrc[3] = result.profile_image_url;
-        followers_count[3] = result.followers_count;
-        friends_count[3] = result.friends_count;
-        tweetNum[3] = result.statuses_count;
-        text4 = data[0].text;
-        console.log(followers_count[3]);
-        console.log(friends_count[3]);
-        console.log(tweetNum[3]);
-        s.resolve();
-        s_flag = 0;
-    }
-}
-    
-// JSONデータから4人のIDを取得する
-function setPeople(data){ // 引数(data)に取得したデータが入ってくる
-    for(var i=0;i<4;i++){
-        id[i] = data.ids[i]; // 取得したデータから、メソッドチェーンで必要なものを取得
-        console.log(id[i]);
-    }
-    var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
-    p = new $.Deferred();
-    p_flag = 1;
-    getInfo(id[0]);
-    p.promise().then(function(){
-        q = new $.Deferred();
-        q_flag = 1;
-        getInfo(id[1])
-        q.promise().then(function(){
-            r = new $.Deferred();
-            r_flag = 1;
-            getInfo(id[2]);
-            r.promise().then(function(){
-                s = new $.Deferred();
-                s_flag = 1;
-                getInfo(id[3]);
-                s.promise().then(function(){
-                    f.resolve();
-                });
-            });
-        });
-    });
-}
-    
-// Twitter APIを使用して次の人の情報(今回はID)を取得する部分
-function getNextperson(action, id) {
-
-    var accessor = {
-        consumerSecret: consumerSecret,
-        tokenSecret: tokenSecret
-    };
-
-    // 送信するパラメータを連想配列で作成
-    var message = {
-        method: "GET", // リクエストの種類
-        action: "https://api.twitter.com/1.1/friends/ids.json",
-        parameters: {
-            oauth_version: "1.0",
-            oauth_signature_method: "HMAC-SHA1",
-            oauth_consumer_key: consumerKey, // コンシューマーキー
-            oauth_token: accessToken, // アクセストークン
-            user_id: id, //ユーザ名
-            //screen_name: "mrboo6111", //ユーザ名
-            count: 1,//個数
-            callback: "rewrite"
-        }
-    };
-    
-    // OAuth認証関係
-    OAuth.setTimestampAndNonce(message);
-    OAuth.SignatureMethod.sign(message, accessor);
-    var url = OAuth.addToURL(message.action, message.parameters);
-
-    // ajaxによる通信
-    $.ajax({
-        type: message.method,
-        url: url, // リクエスト先のURL
-        dataType: "jsonp",
-        jsonp: false,
-        cache: true,
-    });
-}
-    
-// UIの更新
-function rewrite(data){ // 引数(data)に取得したデータが入ってくる
-    //console.log(data);
-    var result = data.ids[0]; // 取得したデータから、メソッドチェーンで必要なものを取得
-    //console.log(result);
-    tempId = result; // id
-    d.resolve();
-}
-            
- $("#next_person1").on("click", function(){
-     //console.log(id[0]);
-     d = new $.Deferred();
-     console.log('次の人ボタンクリック');
-     $(".box1 img").remove();
-     $(".box1 p").remove(); // 表の中身を空にする
-     var url = "https://api.twitter.com/1.1/friends/ids.json";
-     getNextperson(url, id[0]);
-     d.promise().then(function(){
-         g = new $.Deferred();
-         g_flag = 1;
-         id[0] = tempId;
-         console.log('id[0]');
-         console.log(id[0]);
-         getInfo(id[0]);
-         g.promise().then(function(){
-             console.log(temp_name);
-             name1 = temp_name;
-             imgsrc[0] = temp_imgsrc;
-             friends_count[0] = temp_friends_count;
-             followers_count[0] = temp_followers_count;
-             tweetNum[0] = temp_tweetNum;
-             text1 = temp_text;
-             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
-         });
-     });
- });
-    
-$("#next_person2").on("click", function(){
-     //console.log(id[1]);
-     d = new $.Deferred();
-     console.log('次の人ボタンクリック');
-     $(".box2 img").remove();
-     $(".box2 p").remove(); // 表の中身を空にする
-     var url = "https://api.twitter.com/1.1/friends/ids.json";
-     getNextperson(url, id[1]);
-     d.promise().then(function(){
-         g = new $.Deferred();
-         g_flag = 1;
-         id[1] = tempId;
-         console.log('id[1]');
-         console.log(id[1]);
-         getInfo(id[1]);
-         g.promise().then(function(){
-             name2 = temp_name;
-             imgsrc[1] = temp_imgsrc;
-             friends_count[1] = temp_friends_count;
-             followers_count[1] = temp_followers_count;
-             tweetNum[1] = temp_tweetNum;
-             text2 = temp_text;
-             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
-         });
-     });
- });
-    
-$("#next_person3").on("click", function(){
-     //console.log(id[2]);
-     d = new $.Deferred();
-     console.log('次の人ボタンクリック');
-     $(".box3 img").remove();
-     $(".box3 p").remove(); // 表の中身を空にする
-     var url = "https://api.twitter.com/1.1/friends/ids.json";
-     getNextperson(url, id[2]);
-     d.promise().then(function(){
-         g = new $.Deferred();
-         g_flag = 1;
-         id[2] = tempId;
-         console.log('id[2]');
-         console.log(id[2]);
-         getInfo(id[2]);
-         g.promise().then(function(){
-             name3 = temp_name;
-             imgsrc[2] = temp_imgsrc;
-             friends_count[2] = temp_friends_count;
-             followers_count[2] = temp_followers_count;
-             tweetNum[2] = temp_tweetNum;
-             text3 = temp_text;
-             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
-         });
-     });
- });
-    
-$("#next_person4").on("click", function(){
-     //console.log(id[3]);
-     d = new $.Deferred();
-     console.log('次の人ボタンクリック');
-     $(".box4 img").remove();
-     $(".box4 p").remove(); // 表の中身を空にする
-     var url = "https://api.twitter.com/1.1/friends/ids.json";
-     getNextperson(url, id[3]);
-     d.promise().then(function(){
-         g = new $.Deferred();
-         g_flag = 1;
-         id[3] = tempId;
-         console.log('id[3]');
-         console.log(id[3]);
-         getInfo(id[3]);
-         g.promise().then(function(){
-             name4 = temp_name;
-             imgsrc[3] = temp_imgsrc;
-             friends_count[3] = temp_friends_count;
-             followers_count[3] = temp_followers_count;
-             tweetNum[3] = temp_tweetNum;
-             text = temp_text;
-             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
-         });
-     });
- });
-     
- $("#start").on("click", function(){
-     f = new $.Deferred();
-     var url = "https://api.twitter.com/1.1/friends/ids.json";
-     var screen_name = "mrboo6111";
-     getPeople(url, screen_name);
-     f.promise().then(function(){
-         $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
-         $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
-         $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
-         $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
-     });
- });
 	
 </script>
 </head>
-<body onload="start()">
-	
+<body>
+	<IMG src=imgsrc[0] id="test" style="position:absolute;>
 </body>
 </html>
