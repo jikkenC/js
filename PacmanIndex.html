@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8" />
+        <!--ページタイトル-->
+        <title>初期設定画面</title>
+        
+    </head>
+    <body>
+        <dt>ID</dt>
+        <form name="form" id="form" action="">
+            <dd><input type="text" name="ID" id="textID"></dd>
+        </form>
+        <button id="buttonID">IDを送信</button>
+        <!--jqueryを読み込む-->
+        <script src="./jquery.js"></script>
+        <script type="text/javascript">
+        $("#buttonID").on("click", function(){
+            var id = document.forms.form.textID.value;
+            href = "./index2.html?" + id;
+            location.href = href;
+        });
+            
+        </script>
+        
+    </body>
+    
+</html>
