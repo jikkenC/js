@@ -49,7 +49,7 @@
 			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
 			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
 			font_size:"30px", //フォントのサイズを指定します。
-			loop:true //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
 			
 		},
 		
@@ -565,6 +565,7 @@ var alien_down=[0,1,3];
 	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
 	//true or false: イベントの優先順位
 	window.addEventListener ('keydown' , keydownfunc , false);
+    nicoscreen.start();
 	}
 	
 	//再描画のメソッド
@@ -574,34 +575,35 @@ var alien_down=[0,1,3];
 		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
 		decideMoving();
 		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
+        console.log(pac_friends);
 		//1
 		ctx.clearRect (alien_x1 - p_radius,alien_y1- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection1();
 		Alien1();
 		AliendecideMoving1();
 		drawAlien1((alien_x1+=alien_move_x1)-p_radius, (alien_y1+=alien_move_y1)-p_radius);
-        drawTweet(alien_color1,alien_previous_x1*40,alien_previous_y1*40);
+        drawTweet(alien_color1,1,alien_previous_x1,alien_previous_y1);
 		//2
 		ctx.clearRect (alien_x2 - p_radius,alien_y2- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection2();
 		Alien2();
 		AliendecideMoving2();
 		drawAlien2((alien_x2+=alien_move_x2)-p_radius, (alien_y2+=alien_move_y2)-p_radius);
-        drawTweet(alien_color2,alien_previous_x2*40,alien_previous_y2*40);
+        drawTweet(alien_color2,2,alien_previous_x2,alien_previous_y2);
 		//3
 		ctx.clearRect (alien_x3 - p_radius,alien_y3- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection3();
 		Alien3();
 		AliendecideMoving3();
 		drawAlien3((alien_x3+=alien_move_x3)-p_radius, (alien_y3+=alien_move_y3)-p_radius);
-        drawTweet(alien_color3,alien_previous_x3*40,alien_previous_y3*40);
+        drawTweet(alien_color3,3,alien_previous_x3,alien_previous_y3);
 		//4
 		ctx.clearRect (alien_x4 - p_radius,alien_y4- p_radius , p_radius*2 , p_radius*2);
 		checkAlienDetection4();
 		Alien4();
 		AliendecideMoving4();
 		drawAlien4((alien_x4+=alien_move_x4)-p_radius, (alien_y4+=alien_move_y4)-p_radius);
-        drawTweet(alien_color4,alien_previous_x4*40,alien_previous_y4*40);
+        drawTweet(alien_color4,4,alien_previous_x4,alien_previous_y4);
 	}
 	
 		//壁の描画関数
@@ -610,10 +612,10 @@ var alien_down=[0,1,3];
 		ctx.fillRect(chunk_x - p_radius ,chunk_y - p_radius,p_radius*2,p_radius*2); 
 	}
 	
-    function drawTweet(alien_color,x,y){
+    function drawTweet(alien_color,alien_number,x,y){
 		ctx.fillStyle=alien_color;
-		ctx.fillRect(x,y,10,10);
-        chunk[CHUNK_X*y+x]=2;
+		ctx.fillRect(x*40,y*40,10,10);
+        chunk[CHUNK_X*y+x]=1+alien_number;
 	}
 	
 	//パックマンの形状を表すメソッド
@@ -763,6 +765,10 @@ var alien_down=[0,1,3];
 			pac_chunk=pac_chunk-CHUNK_X;
 			break;
 		}
+        if(chunk[pac_chunk]!=1){
+                pac_friends=pac_friends+1; /*1回で増加するフレンド数*/
+                chunk[pac_chunk]=1;
+            }
 	}
 	
 	
@@ -783,7 +789,7 @@ var alien_down=[0,1,3];
 	
 	function drawAlien1(cx,cy){
 		ctx.beginPath();
-		ctx.fillStyle="#FF00FF";//図形の色
+		ctx.fillStyle=alien_color1;//図形の色
 		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		ctx.closePath();
 	}
@@ -1013,7 +1019,7 @@ var alien_down=[0,1,3];
 	
 	function drawAlien2(cx,cy){
 		ctx.beginPath();
-		ctx.fillStyle="#FF0000";//図形の色
+		ctx.fillStyle=alien_color2;//図形の色
 		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		ctx.closePath();
 	}
@@ -1242,7 +1248,7 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien3(cx,cy){
-		ctx.fillStyle="#0000FF";//図形の色
+		ctx.fillStyle=alien_color3;//図形の色
 		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
@@ -1472,7 +1478,7 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien4(cx,cy){
-		ctx.fillStyle="#008000";//図形の色
+		ctx.fillStyle=alien_color4;//図形の色
 		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
