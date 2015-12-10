@@ -83,10 +83,7 @@ var image = new Array(4);
 var followers_count = new Array(4);
 var friends_count = new Array(4);
 var tweetNum = new Array(4);
-var text1 = new Array(10);
-var text2 = new Array(10);
-var text3 = new Array(10);
-var text4 = new Array(10);
+var text1, text2, text3, text4;
 var temp_name;
 var temp_imgsrc;
 var temp_followers_count;
@@ -204,9 +201,7 @@ function setInfo(data){
         followers_count[0] = result.followers_count;
         friends_count[0] = result.friends_count;
         tweetNum[0] = result.statuses_count;
-        for(var i=0;i<10;i++){
-            text1[i] = data[i].text;
-        }
+        text1 = data[0].text;
         p.resolve();
         p_flag = 0;
     }else if(q_flag == 1){
@@ -215,9 +210,7 @@ function setInfo(data){
         followers_count[1] = result.followers_count;
         friends_count[1] = result.friends_count;
         tweetNum[1] = result.statuses_count;
-        for(var i=0;i<10;i++){
-            text2[i] = data[i].text;
-        }
+        text2 = data[0].text;
         q.resolve();
         q_flag = 0;
     }else if(r_flag == 1){
@@ -226,9 +219,7 @@ function setInfo(data){
         followers_count[2] = result.followers_count;
         friends_count[2] = result.friends_count;
         tweetNum[2] = result.statuses_count;
-        for(var i=0;i<10;i++){
-            text3[i] = data[i].text;
-        }
+        text3 = data[0].text;
         r.resolve();
         r_flag = 0;
     }else if(s_flag == 1){
@@ -237,9 +228,7 @@ function setInfo(data){
         followers_count[3] = result.followers_count;
         friends_count[3] = result.friends_count;
         tweetNum[3] = result.statuses_count;
-        for(var i=0;i<10;i++){
-            text4[i] = data[i].text;
-        }
+        text4 = data[0].text;
         s.resolve();
         s_flag = 0;
     }
@@ -342,7 +331,7 @@ function rewrite(data){ // 引数(data)に取得したデータが入ってく�
              followers_count[0] = temp_followers_count;
              tweetNum[0] = temp_tweetNum;
              text1 = temp_text;
-             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1[1] + '</p>');
+             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
          });
      });
  });
@@ -369,7 +358,7 @@ $("#next_person2").on("click", function(){
              followers_count[1] = temp_followers_count;
              tweetNum[1] = temp_tweetNum;
              text2 = temp_text;
-             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2[1] + '</p>');
+             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
          });
      });
  });
@@ -396,7 +385,7 @@ $("#next_person3").on("click", function(){
              followers_count[2] = temp_followers_count;
              tweetNum[2] = temp_tweetNum;
              text3 = temp_text;
-             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[1] + '</p>');
+             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
          });
      });
  });
@@ -423,7 +412,7 @@ $("#next_person4").on("click", function(){
              followers_count[3] = temp_followers_count;
              tweetNum[3] = temp_tweetNum;
              text = temp_text;
-             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[1] + '</p>');
+             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
          });
      });
  });
@@ -483,7 +472,7 @@ var move_x;
 var move_y;
 var tmp_move_x = 0;
 var tmp_move_y = 0;
-pac_friends=2000;
+pac_friends=100;
     
     
 //エイリアンのデータ
@@ -546,7 +535,10 @@ var alien_right=[1,2,3];
 var alien_left=[0,2,3];
 var alien_up=[0,1,2];
 var alien_down=[0,1,3];
-    
+
+//得点
+var point=0;
+
 	function start() {
 	
 	//壁の描画
@@ -600,6 +592,14 @@ var alien_down=[0,1,3];
 		AliendecideMoving4();
 		drawAlien4((alien_x4+=alien_move_x4)-p_radius, (alien_y4+=alien_move_y4)-p_radius);
         drawTweet(alien_color4,4,alien_previous_x4,alien_previous_y4);
+        
+        //Score書き込み
+        ctx.beginPath();
+		ctx.font = "30pt 'Arial'";
+		ctx.fillStyle = "red";
+		ctx.textAlign = "right";
+		ctx.fillText("SCORE",690,60,1000/*最大幅*/);
+        ctx.fillText(point,690,100,1000/*最大幅*/);
 	}
 	
 		//壁の描画関数
@@ -773,17 +773,15 @@ var alien_down=[0,1,3];
 	
 	//1
 	//パックマンとエイリアンのあたり判定
-    function checkAlienDetection1(){
+		function checkAlienDetection1(){
 		if(Math.abs(pac_x - alien_x1) < p_radius*2 && Math.abs(pac_y - alien_y1) < p_radius*2){
             if(friends_count[0] > pac_friends){
                 gameOver();   
             }else{
-                resetAlien1();
+                
             }
 		}
 	}
-    
-
 	
 	function drawAlien1(cx,cy){
 		ctx.beginPath();
@@ -1000,18 +998,6 @@ var alien_down=[0,1,3];
 			break;
 		}
 	}
-    
-    function resetAlien1(){
-        alien_chunk1 = CHUNK_X*1+1;
-        alien_x1 = p_radius*2*1;/*初期座標x*/
-        alien_y1 = p_radius*2*1;/*初期座標y*/
-        alien_move_x1=0;
-        alien_move_y1=0;
-        alien_tmp_move_x1 = 0;
-        alien_tmp_move_y1 = 0; 
-        alien_previous_x1=1;
-        alien_previous_y1=1;
-    }
 	
 	
 	
@@ -1022,7 +1008,7 @@ var alien_down=[0,1,3];
              if(friends_count[1] > pac_friends){
                 gameOver();   
             }else{
-                resetAlien2();
+                
             }
 		}
 	}
@@ -1242,18 +1228,6 @@ var alien_down=[0,1,3];
 			break;
 		}
 	}
-    
-    function resetAlien2(){
-        alien_chunk2 = CHUNK_X*13+1;
-        alien_x2 = p_radius*2*1;/*初期座標x*/
-        alien_y2= p_radius*2*13;/*初期座標y*/
-        alien_move_x2=0;
-        alien_move_y2=0;
-        alien_tmp_move_x2 = 0;
-        alien_tmp_move_y2 = 0; 
-        alien_previous_x2=1;
-        alien_previous_y2=13;
-    }
 	
 	
 	
@@ -1264,7 +1238,7 @@ var alien_down=[0,1,3];
              if(friends_count[2] > pac_friends){
                 gameOver();   
             }else{
-                resetAlien3()
+                
             }
 		}
 	}
@@ -1484,17 +1458,7 @@ var alien_down=[0,1,3];
 		}
 	}
 	
-	function resetAlien3(){
-        alien_chunk3 = CHUNK_X*1+25;
-        alien_x3 = p_radius*2*25;/*初期座標x*/
-        alien_y3 = p_radius*2*1;/*初期座標y*/
-        alien_move_x3=0;
-        alien_move_y3=0;
-        alien_tmp_move_x3 = 0;
-        alien_tmp_move_y3 = 0; 
-        alien_previous_x3=25;
-        alien_previous_y3=1;
-    }
+	
 	
 	
 	//4
@@ -1504,7 +1468,7 @@ var alien_down=[0,1,3];
             if(friends_count[3] > pac_friends){
                 gameOver();   
             }else{
-                resetAlien4();
+                
             }
 		}
 	}
@@ -1724,23 +1688,24 @@ var alien_down=[0,1,3];
 		}
 	}
     
-    function resetAlien4(){
-        alien_chunk4 = CHUNK_X*13+25;
-        alien_x4 = p_radius*2*25;/*初期座標x*/
-        alien_y4 = p_radius*2*13;/*初期座標y*/
-        alien_move_x4=0;
-        alien_move_y4=0;
-        alien_tmp_move_x4 = 0;
-        alien_tmp_move_y4 = 0; 
-        alien_previous_x4=25;
-        alien_previous_y4=13;
-    }
-    
     
     function gameOver(){
         console.log("gameover");
         clearInterval(timerID_1);
     }
+    
+    
+    
+   
+	///////////////////////////////////////////////////////////
+	
+	function moveText(obj,x,y){
+		document.getElementById(obj).style.left = x;
+		document.getElementById(obj).style.top = y;
+	}
+	
+	
+	
 	
 </script>
 </head>
