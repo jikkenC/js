@@ -33,7 +33,7 @@ r3.NicoScreen = {
 		interval:500,
 		speed:6500,
 		font_size:"24px",
-		loop:false,
+		loop:true,
 		
 		height:"",
 		width:""
@@ -111,8 +111,7 @@ r3.NicoScreen = {
 		
 		//console.log(this.env.width);
 		
-		var inid = setInterval("nicoscreen3.draw(null)", this.env.interval);
-		
+		nicoscreen3.draw(null)
 	},
 	
 	draw: function(str){
