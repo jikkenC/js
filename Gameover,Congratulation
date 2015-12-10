@@ -1,0 +1,19 @@
+//画面 ゲームオーバー
+        ctx.beginPath();
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0,0,1400,800);
+        ctx.font = "50pt 'Arial'";
+        ctx.fillStyle = "#ffff00";
+        ctx.fillText("GAME OVER",900,400,1000/*最大幅*/);
+        ctx.closePath();
+        
+        
+        //画面　クリア
+        ctx.beginPath();
+        ctx.fillStyle = "#0000FF";
+        ctx.fillRect(0,0,1400,800);
+        ctx.font = "50pt 'Arial'";
+        ctx.fillStyle = "#ffff00";
+        ctx.fillText("Congratulation!!!",900,400,1000/*最大幅*/);
+        ctx.closePath();
+        
