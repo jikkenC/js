@@ -31,17 +31,15 @@
     </div>
     
     
-<div id="nicoscreen" style="width:1400;height:800"> 
+<div id="nicoscreen" style="width:1000;height:800"> 
 
 <!--キャンバス領域-->
-<canvas id="pacman" width="1400" height="800">
+<canvas id="pacman" width="1000" height="800">
 </canvas>
     
 </div>
 
 <script type="text/javascript">
-
-
     
     var obj = {
 		
@@ -85,7 +83,10 @@ var image = new Array(4);
 var followers_count = new Array(4);
 var friends_count = new Array(4);
 var tweetNum = new Array(4);
-var text1, text2, text3, text4;
+var text1 = new Array(10);
+var text2 = new Array(10);
+var text3 = new Array(10);
+var text4 = new Array(10);
 var temp_name;
 var temp_imgsrc;
 var temp_followers_count;
@@ -203,7 +204,9 @@ function setInfo(data){
         followers_count[0] = result.followers_count;
         friends_count[0] = result.friends_count;
         tweetNum[0] = result.statuses_count;
-        text1 = data[0].text;
+        for(var i=0;i<10;i++){
+            text1[i] = data[i].text;
+        }
         p.resolve();
         p_flag = 0;
     }else if(q_flag == 1){
@@ -212,7 +215,9 @@ function setInfo(data){
         followers_count[1] = result.followers_count;
         friends_count[1] = result.friends_count;
         tweetNum[1] = result.statuses_count;
-        text2 = data[0].text;
+        for(var i=0;i<10;i++){
+            text2[i] = data[i].text;
+        }
         q.resolve();
         q_flag = 0;
     }else if(r_flag == 1){
@@ -221,7 +226,9 @@ function setInfo(data){
         followers_count[2] = result.followers_count;
         friends_count[2] = result.friends_count;
         tweetNum[2] = result.statuses_count;
-        text3 = data[0].text;
+        for(var i=0;i<10;i++){
+            text3[i] = data[i].text;
+        }
         r.resolve();
         r_flag = 0;
     }else if(s_flag == 1){
@@ -230,7 +237,9 @@ function setInfo(data){
         followers_count[3] = result.followers_count;
         friends_count[3] = result.friends_count;
         tweetNum[3] = result.statuses_count;
-        text4 = data[0].text;
+        for(var i=0;i<10;i++){
+            text4[i] = data[i].text;
+        }
         s.resolve();
         s_flag = 0;
     }
@@ -333,7 +342,7 @@ function rewrite(data){ // 引数(data)に取得したデータが入ってく�
              followers_count[0] = temp_followers_count;
              tweetNum[0] = temp_tweetNum;
              text1 = temp_text;
-             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1[1] + '</p>');
          });
      });
  });
@@ -360,7 +369,7 @@ $("#next_person2").on("click", function(){
              followers_count[1] = temp_followers_count;
              tweetNum[1] = temp_tweetNum;
              text2 = temp_text;
-             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2[1] + '</p>');
          });
      });
  });
@@ -387,7 +396,7 @@ $("#next_person3").on("click", function(){
              followers_count[2] = temp_followers_count;
              tweetNum[2] = temp_tweetNum;
              text3 = temp_text;
-             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[1] + '</p>');
          });
      });
  });
@@ -414,7 +423,7 @@ $("#next_person4").on("click", function(){
              followers_count[3] = temp_followers_count;
              tweetNum[3] = temp_tweetNum;
              text = temp_text;
-             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[1] + '</p>');
          });
      });
  });
@@ -425,10 +434,10 @@ $("#next_person4").on("click", function(){
      var screen_name = "mrboo6111";
      getPeople(url, screen_name);
      f.promise().then(function(){
-         $(".box1").append('<img src="' + imgsrc[0] + '"id = "src1"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
-         $(".box2").append('<img src="' + imgsrc[1] + '"id = "src2"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
-         $(".box3").append('<img src="' + imgsrc[2] + '"id = "src3"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
-         $(".box4").append('<img src="' + imgsrc[3] + '"id = "src4"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+         $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+         $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+         $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+         $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
      });
  });
     
@@ -460,15 +469,12 @@ chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
           0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ];
 //パックマンを描画するための変数
 var cv = document.getElementById("pacman");
-cv.style.position = "absolute";
-cv.style.left = "24px";
-cv.style.top = "24px";
 var ctx = cv.getContext("2d");
 //パックマンスタートの諸々
 const p_radius = 24;
-pac_chunk = CHUNK_X*9+13;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
-pac_x = p_radius*2*13;/*初期座標x*/
-pac_y = p_radius*2*9;/*初期座標y*/
+pac_chunk = CHUNK_X*3+3;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
+pac_x = p_radius*2*3;/*初期座標x*/
+pac_y = p_radius*2*3;/*初期座標y*/
 var mouthangle = 0;
 var mouthdirection=0;
 var direction;
@@ -604,7 +610,7 @@ var alien_down=[0,1,3];
 	
     function drawTweet(alien_color,alien_number,x,y){
 		ctx.fillStyle=alien_color;
-		ctx.fillRect(x*p_radius*2,y*p_radius*2,10,10);
+		ctx.fillRect(x*40,y*40,10,10);
         chunk[CHUNK_X*y+x]=1+alien_number;
 	}
 	
@@ -782,7 +788,6 @@ var alien_down=[0,1,3];
 		ctx.fillStyle=alien_color1;//図形の色
 		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		ctx.closePath();
-        ctx.drawImage(document.getElementById("src1"), cx, cy);
 	}
 	
 	
@@ -1013,7 +1018,6 @@ var alien_down=[0,1,3];
 		ctx.fillStyle=alien_color2;//図形の色
 		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		ctx.closePath();
-        ctx.drawImage(document.getElementById("src2"), cx, cy);
 	}
 	
 	
@@ -1240,9 +1244,8 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien3(cx,cy){
-		//ctx.fillStyle=alien_color3;//図形の色
-		//ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
-        ctx.drawImage(document.getElementById("src3"), cx, cy)
+		ctx.fillStyle=alien_color3;//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
 	
@@ -1471,9 +1474,8 @@ var alien_down=[0,1,3];
 	}
 	
 	function drawAlien4(cx,cy){
-		//ctx.fillStyle=alien_color4;//図形の色
-		//ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
-        ctx.drawImage(document.getElementById("src4"), cx, cy)
+		ctx.fillStyle=alien_color4;//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
 		
 	}
 	
