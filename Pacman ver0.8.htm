@@ -71,8 +71,6 @@
 		
 	};
     
-    nicoscreen.set(obj);
-    
     /// //////////////////////////////////////
 var consumerKey    = "t8x1RdghpS6YXyei7uSJNI780";
 var consumerSecret = "ZmHo6mX7JqeyNWHnhmxzQqwtW6rGsK4RmlWcfAxHz7L74X2KZI";
@@ -85,7 +83,10 @@ var image = new Array(4);
 var followers_count = new Array(4);
 var friends_count = new Array(4);
 var tweetNum = new Array(4);
-var text1, text2, text3, text4;
+var text1 = new Array(4);//1人目のツイート内容
+var text2 = new Array(4);//2人目のツイート内容
+var text3 = new Array(4);//3人目のツイート内容
+var text4 = new Array(4);//4人目のツイート内容
 var temp_name;
 var temp_imgsrc;
 var temp_followers_count;
@@ -111,7 +112,11 @@ var s_flag = 0;
 var count = 4; // 表示する件数
     
 ///////////////////////////////////////////////
-    
+
+//objのcommentsに要素を追加する関数
+function commentPush(comment){
+    obj.comments.push(comment);
+}
     
 // Twitter APIを使用してフォローのうちの4人のIDを取得する部分
 function getPeople(account) {
@@ -165,7 +170,7 @@ function getInfo(id){
             oauth_token: accessToken, // アクセストークン
             user_id: id, //ユーザ名
             //screen_name: "mrboo6111", //ユーザ名
-            count: 1,//個数
+            count: 50,//個数
             callback: "setInfo"
         }
     };
@@ -204,7 +209,9 @@ function setInfo(data){
         followers_count[0] = result.followers_count;
         friends_count[0] = result.friends_count;
         tweetNum[0] = result.statuses_count;
-        text1 = data[0].text;
+        for(var i=0;i<50;i++){
+            text1[i] = data[i].text;
+        }
         p.resolve();
         p_flag = 0;
     }else if(q_flag == 1){
@@ -213,7 +220,9 @@ function setInfo(data){
         followers_count[1] = result.followers_count;
         friends_count[1] = result.friends_count;
         tweetNum[1] = result.statuses_count;
-        text2 = data[0].text;
+        for(var i=0;i<50;i++){
+            text2[i] = data[i].text;
+        }
         q.resolve();
         q_flag = 0;
     }else if(r_flag == 1){
@@ -222,7 +231,9 @@ function setInfo(data){
         followers_count[2] = result.followers_count;
         friends_count[2] = result.friends_count;
         tweetNum[2] = result.statuses_count;
-        text3 = data[0].text;
+        for(var i=0;i<50;i++){
+            text3[i] = data[i].text;
+        }
         r.resolve();
         r_flag = 0;
     }else if(s_flag == 1){
@@ -231,7 +242,9 @@ function setInfo(data){
         followers_count[3] = result.followers_count;
         friends_count[3] = result.friends_count;
         tweetNum[3] = result.statuses_count;
-        text4 = data[0].text;
+        for(var i=0;i<50;i++){
+            text4[i] = data[i].text;
+        }
         s.resolve();
         s_flag = 0;
     }
@@ -333,8 +346,7 @@ function nextAlien1(){
              friends_count[0] = temp_friends_count;
              followers_count[0] = temp_followers_count;
              tweetNum[0] = temp_tweetNum;
-             text1 = temp_text;
-             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
+             $(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1[0] + '</p>');
          });
      });
  }
@@ -365,7 +377,7 @@ function nextAlien2(){
              followers_count[1] = temp_followers_count;
              tweetNum[1] = temp_tweetNum;
              text2 = temp_text;
-             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
+             $(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2[0] + '</p>');
          });
      });
 }
@@ -396,7 +408,7 @@ function nextAlien3(){
              followers_count[2] = temp_followers_count;
              tweetNum[2] = temp_tweetNum;
              text3 = temp_text;
-             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
+             $(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[0] + '</p>');
          });
      });
 }
@@ -427,7 +439,7 @@ function nextAlien4(){
              followers_count[3] = temp_followers_count;
              tweetNum[3] = temp_tweetNum;
              text = temp_text;
-             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+             $(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[0] + '</p>');
          });
      });
 }
@@ -443,13 +455,19 @@ function startTwitter(account){
      var screen_name = "mrboo6111";
      getPeople(account);
      f.promise().then(function(){
-         $(".box1").append('<img src="' + imgsrc[0] + '"id = "src1"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1 + '</p>');
-         $(".box2").append('<img src="' + imgsrc[1] + '"id = "src2"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2 + '</p>');
-         $(".box3").append('<img src="' + imgsrc[2] + '"id = "src3"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3 + '</p>');
-         $(".box4").append('<img src="' + imgsrc[3] + '"id = "src4"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4 + '</p>');
+         $(".box1").append('<img src="' + imgsrc[0] + '"id = "src1"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1[0] + '</p>');
+         $(".box2").append('<img src="' + imgsrc[1] + '"id = "src2"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2[0] + '</p>');
+         $(".box3").append('<img src="' + imgsrc[2] + '"id = "src3"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[0] + '</p>');
+         $(".box4").append('<img src="' + imgsrc[3] + '"id = "src4"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[0] + '</p>');
+         for(var i=0;i<50;i++){
+             commentPush(text1[i]);
+             commentPush(text2[i]);
+             commentPush(text3[i]);
+             commentPush(text4[i]);
+         }
      });
  }
-     
+    
  $("#start").on("click", function(){
      startTwitter("pamyurin");
  });
@@ -582,6 +600,7 @@ var alien_down=[0,1,3];
 	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
 	//true or false: イベントの優先順位
 	window.addEventListener ('keydown' , keydownfunc , false);
+    nicoscreen.set(obj);
     nicoscreen.start();
 	}
 	
