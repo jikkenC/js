@@ -1,0 +1,1929 @@
+<html>
+<head>
+<meta charset-"utf-8"/>
+
+    <!-- ライブラリの読み込み部分 ↓ -->
+    <!-- jqueryを読み込む -->
+    <script src="./jquery.js"></script>
+ 
+    <!-- OAuth認証のライブラリを読み込む -->
+    <script type="text/javascript" src="./oauth.js"></script>
+    <script type="text/javascript" src="./sha1.js"></script>
+    <script type="text/javascript" src="nicoscreen1.js"></script>
+    <script type="text/javascript" src="nicoscreen2.js"></script>
+    <script type="text/javascript" src="nicoscreen3.js"></script>
+    <script type="text/javascript" src="nicoscreen4.js"></script>
+    
+    <!-- UI部分 ↓ -->
+    <input type="button"  name="idk" value="game start!!" onClick="start()">
+    
+    <button id="start">スタート</button>  
+    </div>
+    <div class="box1">
+        <button align="right" id="next_person1">次の人1</button>
+    </div>
+    <div class="box2">
+        <button align="right" id="next_person2">次の人2</button>
+    </div>
+    <div class="box3">
+        <button align="right" id="next_person3">次の人3</button>
+    </div>
+    <div class="box4">
+        <button align="right" id="next_person4">次の人4</button>
+    </div>
+    
+    
+<div id="nicoscreen" style="width:1400;height:800"> 
+
+<!--キャンバス領域-->
+<canvas id="pacman" width="1400" height="800">
+</canvas>
+    
+</div>
+
+<script type="text/javascript">
+
+
+    
+    var obj1 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"pink", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
+			"aa"
+		]
+		
+	};
+    
+    var obj2 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"red", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
+			"bb"
+		]
+		
+	};
+    
+    var obj3 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"blue", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
+			
+		]
+		
+	};
+    
+    var obj4 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"green", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
+			
+		]
+		
+	};
+    
+    /// //////////////////////////////////////
+var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
+var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
+var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
+var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW"; 
+/*
+var consumerKey    = "t8x1RdghpS6YXyei7uSJNI780";
+var consumerSecret = "ZmHo6mX7JqeyNWHnhmxzQqwtW6rGsK4RmlWcfAxHz7L74X2KZI";
+var accessToken    = "1565485579-W0B9aW5Rx6Y3pDvPa0QaydjDw8rvTQgU9k2d4wi";
+var tokenSecret    = "Yk9TPmVm29l9wz459boL2Wyd5cWC21OUuTGl9WCWeKsHd";    
+*/
+var name1, name2, name3, name4;
+var imgsrc = new Array(4);
+var id = new Array(4);
+var image = new Array(4);
+var followers_count = new Array(4);
+var friends_count = new Array(4);
+var tweetNum = new Array(4);
+var text1 = new Array(4);//1人目のツイート内容
+var text2 = new Array(4);//2人目のツイート内容
+var text3 = new Array(4);//3人目のツイート内容
+var text4 = new Array(4);//4人目のツイート内容
+var temp_name;
+var temp_imgsrc;
+var temp_followers_count;
+var temp_friends_count;
+var temp_tweetNum;
+var temp_text;
+var followers
+var tempId;
+var tempFriends;
+var tempFollowers;
+var d;
+var f;
+var g;
+var g_flag = 0;
+var p;
+var q;
+var r;
+var s;
+var p_flag = 0;
+var q_flag = 0;
+var r_flag = 0;
+var s_flag = 0; 
+var count = 4; // 表示する件数
+    
+///////////////////////////////////////////////
+
+//obj1のcommentsに要素を追加する関数
+function commentPush1(comment){
+    obj1.comments.push(comment);
+}
+    
+//obj2のcommentsに要素を追加する関数
+function commentPush2(comment){
+    obj2.comments.push(comment);
+}
+    
+//obj3のcommentsに要素を追加する関数
+function commentPush3(comment){
+    obj3.comments.push(comment);
+}
+    
+//obj4のcommentsに要素を追加する関数
+function commentPush4(comment){
+    obj4.comments.push(comment);
+}
+    
+// Twitter APIを使用してフォローのうちの4人のIDを取得する部分
+function getPeople(account) {
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/friends/ids.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            //user_id: 1234, //ユーザ名
+            screen_name: account, //ユーザ名
+            count: 4,//個数
+            callback: "setPeople"
+        }
+    };
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
+//ユーザのIDを指定して、JSONデータ(フォロー数・フォロワー数)を取得する
+function getInfo(id){
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/statuses/user_timeline.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            user_id: id, //ユーザ名
+            //screen_name: "mrboo6111", //ユーザ名
+            count: 50,//個数
+            callback: "setInfo"
+        }
+    };
+    
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
+//JSONデータの中から名前・フォロー数・フォロワー数・ツイート数を取得する
+function setInfo(data){
+    //console.log(data);
+    var result = data[0].user;
+    temp_name = result.name;
+    temp_imgsrc = result.profile_image_url;
+    temp_followers_count = result.followers_count;
+    temp_friends_count = result.friends_count;
+    temp_tweetNum = result.statuses_count;
+    temp_text = data[0].text;
+    if(g_flag == 1){
+        g.resolve();
+        g_flag = 0;
+    }
+    if(p_flag == 1){
+        name1 = result.name;
+        imgsrc[0] = result.profile_image_url;
+        followers_count[0] = result.followers_count;
+        friends_count[0] = result.friends_count;
+        tweetNum[0] = result.statuses_count;
+        for(var i=0;i<50;i++){
+            text1[i] = data[i].text;
+        }
+        p.resolve();
+        p_flag = 0;
+    }else if(q_flag == 1){
+        name2 = result.name;
+        imgsrc[1] = result.profile_image_url;
+        followers_count[1] = result.followers_count;
+        friends_count[1] = result.friends_count;
+        tweetNum[1] = result.statuses_count;
+        for(var i=0;i<50;i++){
+            text2[i] = data[i].text;
+        }
+        q.resolve();
+        q_flag = 0;
+    }else if(r_flag == 1){
+        name3 = result.name;
+        imgsrc[2] = result.profile_image_url;
+        followers_count[2] = result.followers_count;
+        friends_count[2] = result.friends_count;
+        tweetNum[2] = result.statuses_count;
+        for(var i=0;i<50;i++){
+            text3[i] = data[i].text;
+        }
+        r.resolve();
+        r_flag = 0;
+    }else if(s_flag == 1){
+        name4 = result.name;
+        imgsrc[3] = result.profile_image_url;
+        followers_count[3] = result.followers_count;
+        friends_count[3] = result.friends_count;
+        tweetNum[3] = result.statuses_count;
+        for(var i=0;i<50;i++){
+            text4[i] = data[i].text;
+        }
+        s.resolve();
+        s_flag = 0;
+    }
+}
+    
+// JSONデータから4人のIDを取得する
+function setPeople(data){ // 引数(data)に取得したデータが入ってくる
+    for(var i=0;i<4;i++){
+        id[i] = data.ids[i]; // 取得したデータから、メソッドチェーンで必要なものを取得
+    }
+    var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+    p = new $.Deferred();
+    p_flag = 1;
+    getInfo(id[0]);
+    p.promise().then(function(){
+        q = new $.Deferred();
+        q_flag = 1;
+        getInfo(id[1])
+        q.promise().then(function(){
+            r = new $.Deferred();
+            r_flag = 1;
+            getInfo(id[2]);
+            r.promise().then(function(){
+                s = new $.Deferred();
+                s_flag = 1;
+                getInfo(id[3]);
+                s.promise().then(function(){
+                    f.resolve();
+                });
+            });
+        });
+    });
+}
+    
+// Twitter APIを使用して次の人の情報(今回はID)を取得する部分
+function getNextperson(action, id) {
+    var accessor = {
+        consumerSecret: consumerSecret,
+        tokenSecret: tokenSecret
+    };
+    // 送信するパラメータを連想配列で作成
+    var message = {
+        method: "GET", // リクエストの種類
+        action: "https://api.twitter.com/1.1/friends/ids.json",
+        parameters: {
+            oauth_version: "1.0",
+            oauth_signature_method: "HMAC-SHA1",
+            oauth_consumer_key: consumerKey, // コンシューマーキー
+            oauth_token: accessToken, // アクセストークン
+            user_id: id, //ユーザ名
+            //screen_name: "mrboo6111", //ユーザ名
+            count: 1,//個数
+            callback: "rewrite"
+        }
+    };
+    
+    // OAuth認証関係
+    OAuth.setTimestampAndNonce(message);
+    OAuth.SignatureMethod.sign(message, accessor);
+    var url = OAuth.addToURL(message.action, message.parameters);
+    // ajaxによる通信
+    $.ajax({
+        type: message.method,
+        url: url, // リクエスト先のURL
+        dataType: "jsonp",
+        jsonp: false,
+        cache: true,
+    });
+}
+    
+// UIの更新
+function rewrite(data){ // 引数(data)に取得したデータが入ってくる
+    //console.log(data);
+    var result = data.ids[0]; // 取得したデータから、メソッドチェーンで必要なものを取得
+    //console.log(result);
+    tempId = result; // id
+    d.resolve();
+}
+    
+function nextAlien1(){
+     //console.log(id[0]);
+          d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box1 img").remove();
+     $(".box1 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[0]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[0] = tempId;
+         console.log('id[0]');
+         console.log(id[0]);
+         getInfo(id[0]);
+         g.promise().then(function(){
+             console.log(temp_name);
+             name1 = temp_name;
+             imgsrc[0] = temp_imgsrc;
+             friends_count[0] = temp_friends_count;
+             followers_count[0] = temp_followers_count;
+             tweetNum[0] = temp_tweetNum;
+             //$(".box1").append('<img src="' + imgsrc[0] + '"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1[0] + '</p>');
+         });
+     });
+ }
+            
+//$("#next_person1").on("click", function(){
+//     nextAlien1();
+// });
+    
+function nextAlien2(){
+         //console.log(id[1]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box2 img").remove();
+     $(".box2 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[1]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[1] = tempId;
+         console.log('id[1]');
+         console.log(id[1]);
+         getInfo(id[1]);
+         g.promise().then(function(){
+             name2 = temp_name;
+             imgsrc[1] = temp_imgsrc;
+             friends_count[1] = temp_friends_count;
+             followers_count[1] = temp_followers_count;
+             tweetNum[1] = temp_tweetNum;
+             text2 = temp_text;
+             //$(".box2").append('<img src="' + imgsrc[1] + '"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2[0] + '</p>');
+         });
+     });
+}
+    
+//$("#next_person2").on("click", function(){
+//    nextAlien2();
+//});
+    
+function nextAlien3(){
+    //console.log(id[2]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box3 img").remove();
+     $(".box3 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[2]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[2] = tempId;
+         console.log('id[2]');
+         console.log(id[2]);
+         getInfo(id[2]);
+         g.promise().then(function(){
+             name3 = temp_name;
+             imgsrc[2] = temp_imgsrc;
+             friends_count[2] = temp_friends_count;
+             followers_count[2] = temp_followers_count;
+             tweetNum[2] = temp_tweetNum;
+             text3 = temp_text;
+             //$(".box3").append('<img src="' + imgsrc[2] + '"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[0] + '</p>');
+         });
+     });
+}
+    
+//$("#next_person3").on("click", function(){
+//     nextAlien3();
+//});
+    
+function nextAlien4(){
+    //console.log(id[3]);
+     d = new $.Deferred();
+     console.log('次の人ボタンクリック');
+     $(".box4 img").remove();
+     $(".box4 p").remove(); // 表の中身を空にする
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     getNextperson(url, id[3]);
+     d.promise().then(function(){
+         g = new $.Deferred();
+         g_flag = 1;
+         id[3] = tempId;
+         console.log('id[3]');
+         console.log(id[3]);
+         getInfo(id[3]);
+         g.promise().then(function(){
+             name4 = temp_name;
+             imgsrc[3] = temp_imgsrc;
+             friends_count[3] = temp_friends_count;
+             followers_count[3] = temp_followers_count;
+             tweetNum[3] = temp_tweetNum;
+             text = temp_text;
+             //$(".box4").append('<img src="' + imgsrc[3] + '"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[0] + '</p>');
+         });
+     });
+}
+    
+//$("#next_person4").on("click", function(){
+//     nextAlien4();
+// });
+    
+
+function startTwitter(account){
+     f = new $.Deferred();
+     var url = "https://api.twitter.com/1.1/friends/ids.json";
+     var screen_name = "mrboo6111";
+     getPeople(account);
+     f.promise().then(function(){
+         //$(".box1").append('<img src="' + imgsrc[0] + '"id = "src1"/>' + '<p>名前:' + name1 + ' ID:' + id[0] + ' friends:' + friends_count[0] + ' followers:' + followers_count[0] + ' tweet数:' + tweetNum[0] + ' tweet内容:' + text1[0] + '</p>');
+         //$(".box2").append('<img src="' + imgsrc[1] + '"id = "src2"/>' + '<p>名前:' + name2 + ' ID:' + id[1] + ' friends:' + friends_count[1] + ' followers:' + followers_count[1] + ' tweet数:' + tweetNum[1] + ' tweet内容:' + text2[0] + '</p>');
+         //$(".box3").append('<img src="' + imgsrc[2] + '"id = "src3"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[0] + '</p>');
+         //$(".box4").append('<img src="' + imgsrc[3] + '"id = "src4"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[0] + '</p>');
+         /*for(var i=0;i<50;i++){
+             commentPush1(text1[i]);
+             commentPush2(text2[i]);
+             commentPush3(text3[i]);
+             commentPush4(text4[i]);
+         }*/
+     });
+ }
+    
+$("#start").on("click", function(){
+     startTwitter("pamyurin");
+});
+    
+    
+    	
+/////////////////////////////////////////
+    //パックマンの変数
+const UP = 0;
+const DOWN = 1;
+const RIGHT = 2;
+const LEFT = 3;
+const CHUNK_X = 27;
+const CHUNK_Y = 15;
+//マス目の設定
+var chunk = new Array(CHUNK_X*CHUNK_Y);
+chunk = [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+          0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,0,
+          0,1,0,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,
+          0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,
+          0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,
+          0,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1,0,
+          0,1,1,1,1,0,1,1,1,0,0,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,0,
+          0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0,
+          0,1,1,1,1,0,1,1,1,0,0,1,0,0,0,1,0,1,1,1,0,1,1,1,1,1,0,
+          0,1,0,0,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1,0,1,0,
+          0,1,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,
+          0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0,
+          0,1,0,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,1,0,1,0,
+          0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,0,
+          0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ];
+//パックマンを描画するための変数
+var cv = document.getElementById("pacman");
+var ctx = cv.getContext("2d");
+//パックマンスタートの諸々
+const p_radius = 24;
+pac_chunk = CHUNK_X*9+13;	/* CHUNK_X*x+y  (x,yは初期座標の配列)*/
+pac_x = p_radius*2*13;/*初期座標x*/
+pac_y = p_radius*2*9;/*初期座標y*/
+var mouthangle = 0;
+var mouthdirection=0;
+var direction;
+var tmp_direction = DOWN;
+var move_x;
+var move_y;
+var tmp_move_x = 0;
+var tmp_move_y = 0;
+    
+pac_friends=2000;
+tweet_number=0;
+    
+    
+//エイリアンのデータ
+//1
+const alien_color1 = "#FF00FF";
+var Alien_img1 = new Image();
+alien_chunk1 = CHUNK_X*1+1;
+alien_x1 = p_radius*2*1;/*初期座標x*/
+alien_y1 = p_radius*2*1;/*初期座標y*/
+var alien_move_x1=0;
+var alien_move_y1=0;
+var alien_tmp_move_x1 = 0;
+var alien_tmp_move_y1 = 0;
+var rand1= Math.floor( Math.random() * 2);//エイリアンの方向　
+var rand12;//通路が枝分かれの際使用
+var	alien_previous_x1=1;
+var alien_previous_y1=1;
+    
+//2
+const alien_color2 = "#FF0000";
+var Alien_img2 = new Image();
+alien_chunk2 = CHUNK_X*13+1;
+alien_x2 = p_radius*2*1;/*初期座標x*/
+alien_y2 = p_radius*2*13;/*初期座標y*/
+var alien_move_x2=0;
+var alien_move_y2=0;
+var alien_tmp_move_x2 = 0;
+var alien_tmp_move_y2 = 0;
+var rand2= Math.floor( Math.random() * 2);//エイリアンの方向　
+var rand22;//通路が枝分かれの際使用
+var	alien_previous_x2=1;
+var alien_previous_y2=13;
+    
+//3
+const alien_color3 = "#0000FF";
+var Alien_img3 = new Image();
+alien_chunk3 = CHUNK_X*2-2;
+alien_x3 = p_radius*2*25;/*初期座標x*/
+alien_y3 = p_radius*2*1;/*初期座標y*/
+var alien_move_x3=0;
+var alien_move_y3=0;
+var alien_tmp_move_x3 = 0;
+var alien_tmp_move_y3 = 0;
+var rand3= Math.floor( Math.random() * 2);//エイリアンの方向　
+var rand32;//通路が枝分かれの際使用
+var	alien_previous_x3=25;
+var alien_previous_y3=1;
+    
+//4
+const alien_color4 = "#008000";
+var Alien_img4 = new Image();
+alien_chunk4 = CHUNK_X*14-2;
+alien_x4 = p_radius*2*25;/*初期座標x*/
+alien_y4 = p_radius*2*13;/*初期座標y*/
+var alien_move_x4=0;
+var alien_move_y4=0;
+var alien_tmp_move_x4 = 0;
+var alien_tmp_move_y4 = 0;
+var rand4= Math.floor( Math.random() * 2);//エイリアンの方向　
+var rand42;//通路が枝分かれの際使用
+var	alien_previous_x4=25;
+var alien_previous_y4=13;
+var alien_right=[1,2,3];
+var alien_left=[0,2,3];
+var alien_up=[0,1,2];
+var alien_down=[0,1,3];
+    
+	function start() {
+	
+	//壁の描画
+	for(var i=0;i<CHUNK_X;i++){
+		for(var j=0;j<CHUNK_Y; j++){
+			if(chunk[CHUNK_X*j+i] == 0) drawWall(ctx,i*p_radius*2,j*p_radius*2);
+		}
+	}
+    drawScoreMap();
+	
+	//関数reDraw()およびcheckPacmanMouthMove()を一定間隔で呼び出す
+	timerID_1 = setInterval ('reDraw()', 5);
+	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
+	//true or false: イベントの優先順位
+	window.addEventListener ('keydown' , keydownfunc , false);
+	}
+	
+	//再描画のメソッド
+	function reDraw(){
+        checkPacmanMouthMove();
+		//clearRect(): 指定範囲内を透明にする
+		ctx.clearRect (pac_x - p_radius,pac_y - p_radius , p_radius*2 , p_radius*2 );
+		decideMoving();
+		drawPacman(ctx, pac_x+=move_x, pac_y+=move_y,mouthangle);
+		//1
+		ctx.clearRect (alien_x1 - p_radius,alien_y1- p_radius , p_radius*2 , p_radius*2);
+		checkAlienDetection1();
+		Alien1();
+		AliendecideMoving1();
+		drawAlien1((alien_x1+=alien_move_x1)-p_radius, (alien_y1+=alien_move_y1)-p_radius);
+        drawTweet(alien_color1,1,alien_previous_x1,alien_previous_y1);
+		//2
+		ctx.clearRect (alien_x2 - p_radius,alien_y2- p_radius , p_radius*2 , p_radius*2);
+		checkAlienDetection2();
+		Alien2();
+		AliendecideMoving2();
+		drawAlien2((alien_x2+=alien_move_x2)-p_radius, (alien_y2+=alien_move_y2)-p_radius);
+        drawTweet(alien_color2,2,alien_previous_x2,alien_previous_y2);
+		//3
+		ctx.clearRect (alien_x3 - p_radius,alien_y3- p_radius , p_radius*2 , p_radius*2);
+		checkAlienDetection3();
+		Alien3();
+		AliendecideMoving3();
+		drawAlien3((alien_x3+=alien_move_x3)-p_radius, (alien_y3+=alien_move_y3)-p_radius);
+        drawTweet(alien_color3,3,alien_previous_x3,alien_previous_y3);
+		//4
+		ctx.clearRect (alien_x4 - p_radius,alien_y4- p_radius , p_radius*2 , p_radius*2);
+		checkAlienDetection4();
+		Alien4();
+		AliendecideMoving4();
+		drawAlien4((alien_x4+=alien_move_x4)-p_radius, (alien_y4+=alien_move_y4)-p_radius);
+        drawTweet(alien_color4,4,alien_previous_x4,alien_previous_y4);
+        
+        ctx.beginPath();
+		ctx.font = "30pt 'Arial'";
+        ctx.fillStyle = "black";
+        ctx.fillText(pac_friends,690,100,1000/*最大幅*/);
+		ctx.fillStyle = "red";
+		ctx.textAlign = "right";
+        ctx.fillText(pac_friends,690,100,1000/*最大幅*/);
+        ctx.closePath();
+	}
+	
+    function drawScoreMap(){
+        ctx.beginPath();
+		ctx.font = "30pt 'Arial'";
+		ctx.fillStyle = "red";
+		ctx.textAlign = "right";
+		ctx.fillText("SCORE",690,60,1000/*最大幅*/);
+        
+    }
+    
+		//壁の描画関数
+	function drawWall(ctx,chunk_x,chunk_y){
+		ctx.fillStyle="#000000";//図形の色
+		ctx.fillRect(chunk_x - p_radius ,chunk_y - p_radius,p_radius*2,p_radius*2); 
+	}
+	
+    function drawTweet(alien_color,alien_number,x,y){
+		ctx.fillStyle=alien_color;
+		ctx.fillRect(x*p_radius*2,y*p_radius*2,10,10);
+        chunk[CHUNK_X*y+x]=1+alien_number;
+	}
+	
+	//パックマンの形状を表すメソッド
+	//drawPacman(2D, 中心のx座標, 中心のy座標,　口の角度):
+	function drawPacman(ctx,cx,cy,angle){
+		ctx.fillStyle="#FFF000";//図形の色
+		switch (direction) {
+			case RIGHT:				
+				ctx.beginPath();//現在のパスをリセット
+				ctx.arc(cx,cy,p_radius,(30-angle) * Math.PI / 180,(330+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((30-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((30-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((330+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((330+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case LEFT:
+				ctx.beginPath();
+				ctx.arc(cx,cy,p_radius,(210-angle) * Math.PI / 180,(510+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((210-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((210-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((510+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((510+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case UP:
+				ctx.beginPath();
+				ctx.arc(cx,cy,p_radius,(300-angle) * Math.PI / 180,(600+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((300-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((300-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((600+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((600+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+			case DOWN:
+				ctx.beginPath();
+				ctx.arc(cx,cy,p_radius,(120-angle) * Math.PI / 180,(420+angle) * Math.PI / 180);
+				ctx.moveTo(cx,cy);
+				ctx.lineTo(cx + p_radius * Math.cos((120-angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((120-angle) * Math.PI/ 180));
+				ctx.lineTo(cx + p_radius * Math.cos((420+angle) * Math.PI/ 180),
+						   cy + p_radius * Math.sin((420+angle) * Math.PI/ 180));
+				ctx.fill();
+				break;
+		}
+		
+	}
+	
+	
+	//パックマンの口の角度を変化させる関数
+	function checkPacmanMouthMove(){
+		switch (mouthangle){
+			case 0:
+				mouthdirection = 0;
+				break;
+			case 30:
+				mouthdirection = 1;
+				break;
+			default:
+				break;
+		}
+		switch (mouthdirection){
+			case 0:
+				mouthangle++;
+				break;
+			case 1:
+				mouthangle--;
+				break;
+		}
+	}
+	
+	//移動方向の予約
+	function keydownfunc (event) {
+	//どのキーが押されたかの情報を取得する
+	var code = event.keyCode;
+	//スイッチ文でケースにより処理を変える
+	switch (code) {
+		case 37://←キーが押された場合の番号
+			tmp_direction = LEFT;
+			tmp_move_x = -1;//x座標を1px減らす（左に動かす）
+			tmp_move_y = 0;
+			break;//ここでブレークしないと下のコードが実行されてしまう
+		case 39://→キーが押された場合の番号
+			tmp_direction = RIGHT;
+			tmp_move_x = 1;//x座標を1px増やす（右に動かす）
+			tmp_move_y = 0;
+			break;
+		case 38://↑キーが押された場合の番号
+			tmp_direction = UP;
+			tmp_move_x = 0;
+			tmp_move_y = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 40://↓キーが押された場合の番号
+			tmp_direction = DOWN;
+			tmp_move_x = 0;
+			tmp_move_y = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function decideMoving(){
+		if(pac_x % (p_radius*2) == 0 && pac_y % (p_radius*2) == 0){
+			collisionDetection(pac_chunk);
+			direction = tmp_direction;
+			move_x = tmp_move_x;
+			move_y = tmp_move_y;
+			setPacChunk(move_x , move_y);
+		}
+	}
+	
+	//壁などのあたり判定の決定
+	function collisionDetection(pac_chunk){
+		if(chunk[pac_chunk+1] == 0 && tmp_direction == RIGHT){
+			tmp_move_x = 0;
+		}
+		if(chunk[pac_chunk-1] == 0 && tmp_direction == LEFT){
+			tmp_move_x = 0;
+		}
+		if(chunk[pac_chunk+CHUNK_X] == 0 && tmp_direction == DOWN){
+			tmp_move_y = 0;
+		}
+		if(chunk[pac_chunk-CHUNK_X] == 0 && tmp_direction == UP){
+			tmp_move_y = 0;
+		}
+	}
+	
+		
+	//パックマンの存在区画の更新
+	function setPacChunk(move_x,move_y){
+		switch(move_x){
+		case 1:
+			pac_chunk=pac_chunk+1;
+			break;
+		case -1:
+			pac_chunk=pac_chunk-1;
+			break;
+		}
+		switch(move_y){
+		case 1:
+			pac_chunk=pac_chunk+CHUNK_X;
+			break;
+		case -1:
+			pac_chunk=pac_chunk-CHUNK_X;
+			break;
+		}
+        if(chunk[pac_chunk]!=1){
+                pac_friends=pac_friends+1; /*1回で増加するフレンド数*/
+                switch(chunk[pac_chunk]){
+                    case 2:
+                        showTweet(2);
+                        break;
+                    case 3:
+                        showTweet(3);
+                        break;
+                    case 4:
+                        showTweet(4);
+                        break;
+                    case 5:
+                        showTweet(5);
+                        break;
+                }
+                chunk[pac_chunk]=1;
+            }
+	}
+	
+	function showTweet(alien_number){
+        if(tweet_number==49){tweet_number=0;}
+        tweet_number++;
+        switch(alien_number){
+                case(2):
+                    obj1.comments[0]=text1[tweet_number];
+                    console.log(obj1.comments[0]);
+                    nicoscreen1.set(obj1);
+	                nicoscreen1.start();
+                    break;
+                case(3):
+                    obj2.comments[0]=text2[tweet_number];
+                    nicoscreen2.set(obj2);
+                    nicoscreen2.start();
+                    break;
+                case(4):
+                    obj3.comments[0]=text3[tweet_number];
+                    nicoscreen3.set(obj3);
+                    nicoscreen3.start();
+                    break;
+                case(5):
+                    obj4.comments[0]=text4[tweet_number];
+                    nicoscreen4.set(obj4);
+                    nicoscreen4.start();
+                    break;
+        }
+    }
+	
+	
+	
+	//1
+	//パックマンとエイリアンのあたり判定
+    function checkAlienDetection1(){
+		if(Math.abs(pac_x - alien_x1) < p_radius*2 && Math.abs(pac_y - alien_y1) < p_radius*2){
+            if(friends_count[0] > pac_friends){
+                gameOver();   
+            }else{
+                nextAlien1();
+                resetAlien1();
+            }
+		}
+	}
+    
+
+	
+	function drawAlien1(cx,cy){
+		ctx.beginPath();
+		ctx.fillStyle=alien_color1;//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+		ctx.closePath();
+        Alien_img1.src = imgsrc[0];
+        ctx.drawImage(Alien_img1, cx, cy);
+        //console.log(document.getElementById("src1"));
+	}
+	
+	
+	
+	function Alien1(){
+	switch (rand1) {
+		case 0://左
+			
+			alien_tmp_move_x1 = -1;//x座標を1px減らす（左に動かす）
+			alien_tmp_move_y1 = 0;
+			break;
+		case 1://右
+			
+			alien_tmp_move_x1 = 1;//x座標を1px増やす（右に動かす）
+			alien_tmp_move_y1 = 0;
+			break;
+		case 2:////上
+			
+			alien_tmp_move_x1 = 0;
+			alien_tmp_move_y1 = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 3://下
+			
+			alien_tmp_move_x1 = 0;
+			alien_tmp_move_y1 = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function AliendecideMoving1(){
+		if(alien_x1 % (p_radius*2) == 0 && alien_y1 % (p_radius*2) == 0){
+            alien_previous_x1=alien_previous_x1+alien_move_x1;
+			alien_previous_y1=alien_previous_y1+alien_move_y1;
+			AliencollisionDetection1(alien_chunk1);	
+			alien_move_x1 = alien_tmp_move_x1;
+			alien_move_y1 = alien_tmp_move_y1;
+			setAlienChunk1(alien_move_x1 , alien_move_y1);
+		}
+	}
+	
+	
+	
+	
+	
+	function Alienwallsearch011(arr){/*進行方向が右or左のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk1+CHUNK_X] +chunk[alien_chunk1-CHUNK_X] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand1=rand1;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand12 = Math.floor( Math.random() * 3);
+				AlienchangeUpDown1(arr[rand12])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeUpDown1(directionupdown){//上or下に方向を変える
+		switch(directionupdown){
+			case 2://上が選ばれたとき上に方向転換
+				alien_tmp_move_x1 = 0;
+				if(chunk[alien_chunk1-CHUNK_X] == 0){//上に壁があるかどうか
+						alien_tmp_move_y1 = 1;
+						rand1=3;
+				}else{
+					alien_tmp_move_y1 = -1;
+					rand1=2;
+				}
+				break;
+										
+			case 3://下が選ばれたとき上に方向転換
+				alien_tmp_move_x1 = 0;
+				if(chunk[alien_chunk1+CHUNK_X] == 0){
+					alien_tmp_move_y1 = -1;
+					rand1=2;
+				}else{
+					alien_tmp_move_y1 = 1;
+					rand1=3;
+				}
+				break;
+									
+		}
+	}
+	
+	
+	
+	function Alienwallsearch231(arr){/*進行方向が上or下のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk1+1] +chunk[alien_chunk1-1] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand1=rand1;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand12 = Math.floor( Math.random() * 3);
+				AlienchangeLeftRight1(arr[rand12])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeLeftRight1(directionleftright){//右or左に方向を変える
+		
+				switch(directionleftright){
+					case 0:
+						alien_tmp_move_y1 = 0;
+						if(chunk[alien_chunk1-1] == 0){
+							alien_tmp_move_x1 = 1;
+							rand1=1;
+						}else{
+							alien_tmp_move_x1 = -1;
+							rand1=0;
+						}
+						break;
+					case 1:
+						alien_tmp_move_y1 = 0;
+						if(chunk[alien_chunk1+1] == 0){
+							alien_tmp_move_x1 = -1;
+							rand1=0;
+						}else{
+							alien_tmp_move_x1 = 1;
+							rand1=1;
+						}
+						break;
+				}
+	}
+	
+	
+	
+	
+	
+	
+	//壁のあたり判定の決定
+	function AliencollisionDetection1(alien_chunk1){
+		switch (rand1) {
+			case 1://右
+			
+				if(chunk[alien_chunk1+1] == 0){//前方が壁のとき
+						rand1 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+						AlienchangeUpDown1(rand1);
+						
+				}else{
+			
+					 Alienwallsearch011(alien_right);
+				}
+			break;
+			
+		
+		case 0:
+			if(chunk[alien_chunk1-1] == 0){//前方が壁のとき
+				rand1 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+				AlienchangeUpDown1(rand1);
+				
+			}else{
+			
+				 	Alienwallsearch011(alien_left);
+			}
+			break;
+			
+			
+		case 3://下
+			if(chunk[alien_chunk1+CHUNK_X] == 0){//下が壁
+				rand1 = Math.floor( Math.random() * 2);//0:左,1:右
+				AlienchangeLeftRight1(rand1);
+				
+			}else{
+			
+				Alienwallsearch231(alien_down);
+			}
+			break;
+			
+			
+		case 2:
+			if(chunk[alien_chunk1-CHUNK_X] == 0){
+				rand1 = Math.floor( Math.random() * 2);
+				AlienchangeLeftRight1(rand1);
+			}else{
+			
+				Alienwallsearch231(alien_up);
+			}
+			break;
+		}
+	}
+	
+	//エイリアンの存在区画の更新
+	function setAlienChunk1(alien_move_x1,alien_move_y1){
+		switch(alien_move_x1){
+		case 1:
+			alien_chunk1=alien_chunk1+1;
+			break;
+		case -1:
+			alien_chunk1=alien_chunk1-1;
+			break;
+		}
+		switch(alien_move_y1){
+		case 1:
+			alien_chunk1=alien_chunk1+CHUNK_X;
+			break;
+		case -1:
+			alien_chunk1=alien_chunk1-CHUNK_X;
+			break;
+		}
+	}
+    
+    function resetAlien1(){
+        alien_chunk1 = CHUNK_X*1+1;
+        alien_x1 = p_radius*2*1;/*初期座標x*/
+        alien_y1 = p_radius*2*1;/*初期座標y*/
+        alien_move_x1=0;
+        alien_move_y1=0;
+        alien_tmp_move_x1 = 0;
+        alien_tmp_move_y1 = 0; 
+        alien_previous_x1=1;
+        alien_previous_y1=1;
+    }
+	
+	
+	
+	//2
+	//パックマンとエイリアンのあたり判定
+		function checkAlienDetection2(){
+		if(Math.abs(pac_x - alien_x2) < p_radius*2 && Math.abs(pac_y - alien_y2) < p_radius*2){
+             if(friends_count[1] > pac_friends){
+                gameOver();   
+            }else{
+                nextAlien2();
+                resetAlien2();
+            }
+		}
+	}
+	
+	function drawAlien2(cx,cy){
+		ctx.beginPath();
+		ctx.fillStyle=alien_color2;//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+		ctx.closePath();
+        Alien_img2.src = imgsrc[1];
+        ctx.drawImage(Alien_img2, cx, cy);
+	}
+	
+	
+	
+	function Alien2(){
+	switch (rand2) {
+		case 0://左
+			
+			alien_tmp_move_x2 = -1;//x座標を1px減らす（左に動かす）
+			alien_tmp_move_y2 = 0;
+			break;
+		case 1://右
+			
+			alien_tmp_move_x2 = 1;//x座標を1px増やす（右に動かす）
+			alien_tmp_move_y2 = 0;
+			break;
+		case 2:////上
+			
+			alien_tmp_move_x2 = 0;
+			alien_tmp_move_y2 = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 3://下
+			
+			alien_tmp_move_x2 = 0;
+			alien_tmp_move_y2 = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function AliendecideMoving2(){
+		if(alien_x2 % (p_radius*2) == 0 && alien_y2 % (p_radius*2) == 0){
+            alien_previous_x2=alien_previous_x2+alien_move_x2;
+			alien_previous_y2=alien_previous_y2+alien_move_y2;
+			AliencollisionDetection2(alien_chunk2);
+			alien_move_x2 = alien_tmp_move_x2;
+			alien_move_y2 = alien_tmp_move_y2;
+			setAlienChunk2(alien_move_x2 , alien_move_y2);
+		}
+	}
+	
+	
+	
+	
+	
+	function Alienwallsearch012(arr){/*進行方向が右or左のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk2+CHUNK_X] +chunk[alien_chunk2-CHUNK_X] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand2=rand2;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand22 = Math.floor( Math.random() * 3);
+				AlienchangeUpDown2(arr[rand22])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeUpDown2(directionupdown){//上or下に方向を変える
+		switch(directionupdown){
+			case 2://上が選ばれたとき上に方向転換
+				alien_tmp_move_x2 = 0;
+				if(chunk[alien_chunk2-CHUNK_X] == 0){//上に壁があるかどうか
+						alien_tmp_move_y2 = 1;
+						rand2=3;
+				}else{
+					alien_tmp_move_y2 = -1;
+					rand2=2;
+				}
+				break;
+										
+			case 3://下が選ばれたとき上に方向転換
+				alien_tmp_move_x2 = 0;
+				if(chunk[alien_chunk2+CHUNK_X] == 0){
+					alien_tmp_move_y2 = -1;
+					rand2=2;
+				}else{
+					alien_tmp_move_y2 = 1;
+					rand2=3;
+				}
+				break;
+									
+		}
+	}
+	
+	
+	
+	function Alienwallsearch232(arr){/*進行方向が上or下のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk2+1] +chunk[alien_chunk2-1] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand2=rand2;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand22 = Math.floor( Math.random() * 3);
+				AlienchangeLeftRight2(arr[rand22])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeLeftRight2(directionleftright){//右or左に方向を変える
+		
+				switch(directionleftright){
+					case 0:
+						alien_tmp_move_y2 = 0;
+						if(chunk[alien_chunk2-1] == 0){
+							alien_tmp_move_x2 = 1;
+							rand2=1;
+						}else{
+							alien_tmp_move_x2 = -1;
+							rand2=0;
+						}
+						break;
+					case 1:
+						alien_tmp_move_y2 = 0;
+						if(chunk[alien_chunk2+1] == 0){
+							alien_tmp_move_x2 = -1;
+							rand2=0;
+						}else{
+							alien_tmp_move_x2 = 1;
+							rand2=1;
+						}
+						break;
+				}
+	}
+	
+	
+	
+	
+	
+	
+	//壁のあたり判定の決定
+	function AliencollisionDetection2(alien_chunk2){
+		switch (rand2) {
+			case 1://右
+			
+				if(chunk[alien_chunk2+1] == 0){//前方が壁のとき
+						rand2 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+						AlienchangeUpDown2(rand2);
+						
+				}else{
+			
+					 Alienwallsearch012(alien_right);
+				}
+			break;
+			
+		
+		case 0:
+			if(chunk[alien_chunk2-1] == 0){//前方が壁のとき
+				rand2 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+				AlienchangeUpDown2(rand2);
+				
+			}else{
+			
+				 	Alienwallsearch012(alien_left);
+			}
+			break;
+			
+			
+		case 3://下
+			if(chunk[alien_chunk2+CHUNK_X] == 0){//下が壁
+				rand2 = Math.floor( Math.random() * 2);//0:左,1:右
+				AlienchangeLeftRight2(rand2);
+				
+			}else{
+			
+				Alienwallsearch232(alien_down);
+			}
+			break;
+			
+			
+		case 2:
+			if(chunk[alien_chunk2-CHUNK_X] == 0){
+				rand2 = Math.floor( Math.random() * 2);
+				AlienchangeLeftRight2(rand2);
+			}else{
+			
+				Alienwallsearch232(alien_up);
+			}
+			break;
+		}
+	}
+	
+	//エイリアンの存在区画の更新
+	function setAlienChunk2(alien_move_x2,alien_move_y2){
+		switch(alien_move_x2){
+		case 1:
+			alien_chunk2=alien_chunk2+1;
+			break;
+		case -1:
+			alien_chunk2=alien_chunk2-1;
+			break;
+		}
+		switch(alien_move_y2){
+		case 1:
+			alien_chunk2=alien_chunk2+CHUNK_X;
+			break;
+		case -1:
+			alien_chunk2=alien_chunk2-CHUNK_X;
+			break;
+		}
+	}
+    
+    function resetAlien2(){
+        alien_chunk2 = CHUNK_X*13+1;
+        alien_x2 = p_radius*2*1;/*初期座標x*/
+        alien_y2= p_radius*2*13;/*初期座標y*/
+        alien_move_x2=0;
+        alien_move_y2=0;
+        alien_tmp_move_x2 = 0;
+        alien_tmp_move_y2 = 0; 
+        alien_previous_x2=1;
+        alien_previous_y2=13;
+    }
+	
+	
+	
+//3
+	//パックマンとエイリアンのあたり判定
+		function checkAlienDetection3(){
+		if(Math.abs(pac_x - alien_x3) < p_radius*2 && Math.abs(pac_y - alien_y3) < p_radius*2){
+             if(friends_count[2] > pac_friends){
+                gameOver();   
+            }else{
+                nextAlien3();
+                resetAlien3()
+            }
+		}
+	}
+	
+	function drawAlien3(cx,cy){
+		ctx.fillStyle=alien_color3;//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+        Alien_img3.src = imgsrc[2];
+        ctx.drawImage(Alien_img3, cx, cy);
+		
+	}
+	
+	
+	
+	function Alien3(){
+	switch (rand3) {
+		case 0://左
+			
+			alien_tmp_move_x3 = -1;//x座標を1px減らす（左に動かす）
+			alien_tmp_move_y3 = 0;
+			break;
+		case 1://右
+			
+			alien_tmp_move_x3 = 1;//x座標を1px増やす（右に動かす）
+			alien_tmp_move_y3 = 0;
+			break;
+		case 2:////上
+			
+			alien_tmp_move_x3 = 0;
+			alien_tmp_move_y3 = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 3://下
+			
+			alien_tmp_move_x3 = 0;
+			alien_tmp_move_y3 = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function AliendecideMoving3(){
+		if(alien_x3 % (p_radius*2) == 0 && alien_y3 % (p_radius*2) == 0){
+            alien_previous_x3=alien_previous_x3+alien_move_x3;
+			alien_previous_y3=alien_previous_y3+alien_move_y3;
+			AliencollisionDetection3(alien_chunk3);
+			alien_move_x3 = alien_tmp_move_x3;
+			alien_move_y3 = alien_tmp_move_y3;
+			setAlienChunk3(alien_move_x3 , alien_move_y3);
+		}
+	}
+	
+	
+	
+	
+	
+	function Alienwallsearch013(arr){/*進行方向が右or左のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk3+CHUNK_X] +chunk[alien_chunk3-CHUNK_X] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand3=rand3;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand32 = Math.floor( Math.random() * 3);
+				AlienchangeUpDown3(arr[rand32])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeUpDown3(directionupdown){//上or下に方向を変える
+		switch(directionupdown){
+			case 2://上が選ばれたとき上に方向転換
+				alien_tmp_move_x3 = 0;
+				if(chunk[alien_chunk3-CHUNK_X] == 0){//上に壁があるかどうか
+						alien_tmp_move_y3 = 1;
+						rand3=3;
+				}else{
+					alien_tmp_move_y3 = -1;
+					rand3=2;
+				}
+				break;
+										
+			case 3://下が選ばれたとき上に方向転換
+				alien_tmp_move_x3 = 0;
+				if(chunk[alien_chunk3+CHUNK_X] == 0){
+					alien_tmp_move_y3 = -1;
+					rand3=2;
+				}else{
+					alien_tmp_move_y3 = 1;
+					rand3=3;
+				}
+				break;
+									
+		}
+	}
+	
+	
+	
+	function Alienwallsearch233(arr){/*進行方向が上or下のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk3+1] +chunk[alien_chunk3-1] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand3=rand3;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand32 = Math.floor( Math.random() * 3);
+				AlienchangeLeftRight3(arr[rand32])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeLeftRight3(directionleftright){//右or左に方向を変える
+		
+				switch(directionleftright){
+					case 0:
+						alien_tmp_move_y3 = 0;
+						if(chunk[alien_chunk3-1] == 0){
+							alien_tmp_move_x3 = 1;
+							rand3=1;
+						}else{
+							alien_tmp_move_x3 = -1;
+							rand3=0;
+						}
+						break;
+					case 1:
+						alien_tmp_move_y3 = 0;
+						if(chunk[alien_chunk3+1] == 0){
+							alien_tmp_move_x3 = -1;
+							rand3=0;
+						}else{
+							alien_tmp_move_x3 = 1;
+							rand3=1;
+						}
+						break;
+				}
+	}
+	
+	
+	
+	
+	
+	
+	//壁のあたり判定の決定
+	function AliencollisionDetection3(alien_chunk3){
+		switch (rand3) {
+			case 1://右
+			
+				if(chunk[alien_chunk3+1] == 0){//前方が壁のとき
+						rand3 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+						AlienchangeUpDown3(rand3);
+						
+				}else{
+			
+					 Alienwallsearch013(alien_right);
+				}
+			break;
+			
+		
+		case 0:
+			if(chunk[alien_chunk3-1] == 0){//前方が壁のとき
+				rand3 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+				AlienchangeUpDown3(rand3);
+				
+			}else{
+			
+				 	Alienwallsearch013(alien_left);
+			}
+			break;
+			
+			
+		case 3://下
+			if(chunk[alien_chunk3+CHUNK_X] == 0){//下が壁
+				rand3 = Math.floor( Math.random() * 2);//0:左,1:右
+				AlienchangeLeftRight3(rand3);
+				
+			}else{
+			
+				Alienwallsearch233(alien_down);
+			}
+			break;
+			
+			
+		case 2:
+			if(chunk[alien_chunk3-CHUNK_X] == 0){
+				rand3 = Math.floor( Math.random() * 2);
+				AlienchangeLeftRight3(rand3);
+			}else{
+			
+				Alienwallsearch233(alien_up);
+			}
+			break;
+		}
+	}
+	
+	//エイリアンの存在区画の更新
+	function setAlienChunk3(alien_move_x3,alien_move_y3){
+		switch(alien_move_x3){
+		case 1:
+			alien_chunk3=alien_chunk3+1;
+			break;
+		case -1:
+			alien_chunk3=alien_chunk3-1;
+			break;
+		}
+		switch(alien_move_y3){
+		case 1:
+			alien_chunk3=alien_chunk3+CHUNK_X;
+			break;
+		case -1:
+			alien_chunk3=alien_chunk3-CHUNK_X;
+			break;
+		}
+	}
+	
+	function resetAlien3(){
+        alien_chunk3 = CHUNK_X*1+25;
+        alien_x3 = p_radius*2*25;/*初期座標x*/
+        alien_y3 = p_radius*2*1;/*初期座標y*/
+        alien_move_x3=0;
+        alien_move_y3=0;
+        alien_tmp_move_x3 = 0;
+        alien_tmp_move_y3 = 0; 
+        alien_previous_x3=25;
+        alien_previous_y3=1;
+    }
+	
+	
+	//4
+		//パックマンとエイリアンのあたり判定
+		function checkAlienDetection4(){
+		if(Math.abs(pac_x - alien_x4) < p_radius*2 && Math.abs(pac_y - alien_y4) < p_radius*2){
+            if(friends_count[3] > pac_friends){
+                gameOver();   
+            }else{
+                nextAlien4();
+                resetAlien4();
+            }
+		}
+	}
+	
+	function drawAlien4(cx,cy){
+		ctx.fillStyle=alien_color4;//図形の色
+		ctx.fillRect(cx,cy,p_radius*2,p_radius*2);
+        Alien_img4.src = imgsrc[3];
+        ctx.drawImage(Alien_img4, cx, cy);
+		
+	}
+	
+	
+	
+	function Alien4(){
+	switch (rand4) {
+		case 0://左
+			
+			alien_tmp_move_x4 = -1;//x座標を1px減らす（左に動かす）
+			alien_tmp_move_y4 = 0;
+			break;
+		case 1://右
+			
+			alien_tmp_move_x4 = 1;//x座標を1px増やす（右に動かす）
+			alien_tmp_move_y4 = 0;
+			break;
+		case 2:////上
+			
+			alien_tmp_move_x4 = 0;
+			alien_tmp_move_y4 = -1;//y座標を1px減らす（上に動かす）
+			break;
+		case 3://下
+			
+			alien_tmp_move_x4 = 0;
+			alien_tmp_move_y4 = 1;//y座標を1px増やす（下に動かす）
+			break;
+		}
+	}
+	
+	//区画間の移動方向の決定
+	function AliendecideMoving4(){
+		if(alien_x4 % (p_radius*2) == 0 && alien_y4 % (p_radius*2) == 0){
+            alien_previous_x4=alien_previous_x4+alien_move_x4;
+			alien_previous_y4=alien_previous_y4+alien_move_y4;
+			AliencollisionDetection4(alien_chunk4);
+			alien_move_x4 = alien_tmp_move_x4;
+			alien_move_y4 = alien_tmp_move_y4;
+			setAlienChunk4(alien_move_x4 , alien_move_y4);
+		}
+	}
+	
+	
+	
+	
+	
+	function Alienwallsearch014(arr){/*進行方向が右or左のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk4+CHUNK_X] +chunk[alien_chunk4-CHUNK_X] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand4=rand4;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand42 = Math.floor( Math.random() * 3);
+				AlienchangeUpDown4(arr[rand42])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeUpDown4(directionupdown){//上or下に方向を変える
+		switch(directionupdown){
+			case 2://上が選ばれたとき上に方向転換
+				alien_tmp_move_x4 = 0;
+				if(chunk[alien_chunk4-CHUNK_X] == 0){//上に壁があるかどうか
+						alien_tmp_move_y4 = 1;
+						rand4=3;
+				}else{
+					alien_tmp_move_y4 = -1;
+					rand4=2;
+				}
+				break;
+										
+			case 3://下が選ばれたとき上に方向転換
+				alien_tmp_move_x4 = 0;
+				if(chunk[alien_chunk4+CHUNK_X] == 0){
+					alien_tmp_move_y4 = -1;
+					rand4=2;
+				}else{
+					alien_tmp_move_y4 = 1;
+					rand4=3;
+				}
+				break;
+									
+		}
+	}
+	
+	
+	
+	function Alienwallsearch234(arr){/*進行方向が上or下のときに使用。＋型の分かれ道でランダムに道を選択*/
+		switch(chunk[alien_chunk4+1] +chunk[alien_chunk4-1] ){
+			case 0://進行方向しか通路がなかったとき
+							
+				rand4=rand4;
+				break;
+						
+			default://通路が枝分かれになったとき
+							
+				rand42 = Math.floor( Math.random() * 3);
+				AlienchangeLeftRight4(arr[rand42])
+					
+				break;
+		}
+	}
+	
+	
+	function AlienchangeLeftRight4(directionleftright){//右or左に方向を変える
+		
+				switch(directionleftright){
+					case 0:
+						alien_tmp_move_y4 = 0;
+						if(chunk[alien_chunk4-1] == 0){
+							alien_tmp_move_x4 = 1;
+							rand4=1;
+						}else{
+							alien_tmp_move_x4 = -1;
+							rand4=0;
+						}
+						break;
+					case 1:
+						alien_tmp_move_y4 = 0;
+						if(chunk[alien_chunk4+1] == 0){
+							alien_tmp_move_x4 = -1;
+							rand4=0;
+						}else{
+							alien_tmp_move_x4 = 1;
+							rand4=1;
+						}
+						break;
+				}
+	}
+	
+	
+	
+	
+	
+	
+	//壁のあたり判定の決定
+	function AliencollisionDetection4(alien_chunk4){
+		switch (rand4) {
+			case 1://右
+			
+				if(chunk[alien_chunk4+1] == 0){//前方が壁のとき
+						rand4 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+						AlienchangeUpDown4(rand4);
+						
+				}else{
+			
+					 Alienwallsearch014(alien_right);
+				}
+			break;
+			
+		
+		case 0:
+			if(chunk[alien_chunk4-1] == 0){//前方が壁のとき
+				rand4 = Math.floor( Math.random() * 2)+2;//2:上,3:下
+				AlienchangeUpDown4(rand4);
+				
+			}else{
+			
+				 	Alienwallsearch014(alien_left);
+			}
+			break;
+			
+			
+		case 3://下
+			if(chunk[alien_chunk4+CHUNK_X] == 0){//下が壁
+				rand4 = Math.floor( Math.random() * 2);//0:左,1:右
+				AlienchangeLeftRight4(rand4);
+				
+			}else{
+			
+				Alienwallsearch234(alien_down);
+			}
+			break;
+			
+			
+		case 2:
+			if(chunk[alien_chunk4-CHUNK_X] == 0){
+				rand4 = Math.floor( Math.random() * 2);
+				AlienchangeLeftRight4(rand4);
+			}else{
+			
+				Alienwallsearch234(alien_up);
+			}
+			break;
+		}
+	}
+	
+	//エイリアンの存在区画の更新
+	function setAlienChunk4(alien_move_x4,alien_move_y4){
+		switch(alien_move_x4){
+		case 1:
+			alien_chunk4=alien_chunk4+1;
+			break;
+		case -1:
+			alien_chunk4=alien_chunk4-1;
+			break;
+		}
+		switch(alien_move_y4){
+		case 1:
+			alien_chunk4=alien_chunk4+CHUNK_X;
+			break;
+		case -1:
+			alien_chunk4=alien_chunk4-CHUNK_X;
+			break;
+		}
+	}
+    
+    function resetAlien4(){
+        alien_chunk4 = CHUNK_X*13+25;
+        alien_x4 = p_radius*2*25;/*初期座標x*/
+        alien_y4 = p_radius*2*13;/*初期座標y*/
+        alien_move_x4=0;
+        alien_move_y4=0;
+        alien_tmp_move_x4 = 0;
+        alien_tmp_move_y4 = 0; 
+        alien_previous_x4=25;
+        alien_previous_y4=13;
+    }
+    
+    
+    function gameOver(){
+        console.log("gameover");
+        clearInterval(timerID_1);
+    }
+	
+</script>
+</head>
+<body>
+	<IMG src=imgsrc[0] id="test" style="position:absolute;>
+</body>
+</html>
