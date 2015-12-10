@@ -43,11 +43,11 @@
 
 
     
-    var obj = {
+    var obj1 = {
 		
 		//基本情報が設定できます
 		"base":{
-			color:"white", //文字の色を指定します
+			color:"yellow", //文字の色を指定します
 			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
 			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
 			font_size:"30px", //フォントのサイズを指定します。
@@ -58,24 +58,72 @@
 		//ここに、重ねるコメントを登録します。個数制限はありません。
 		"comments":[
 			
-			"ワロスｗｗｗｗｗ",
-			"ｗｗｗｗｗ",
-			"かわいい",	
-			"(*´д`*)はぁはぁ",
-			"なんだこれｗｗｗ",
-			"ねこかわゆす"
+		]
+		
+	};
+    
+    var obj2 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"blue", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
 			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
 			
+		]
+		
+	};
+    
+    var obj3 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"red", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
+			
+		]
+		
+	};
+    
+    var obj4 = {
+		
+		//基本情報が設定できます
+		"base":{
+			color:"green", //文字の色を指定します
+			speed:"normal", //文字が流れるスピードを指定します。slow/fast/normal 
+			interval:"normal",//文字が流れる間隔を指定します。slow/fast/normal
+			font_size:"30px", //フォントのサイズを指定します。
+			loop:false //文字が最後まで流れた後に、繰り返すかどうか　true/false
+			
+		},
+		
+		//ここに、重ねるコメントを登録します。個数制限はありません。
+		"comments":[
 			
 		]
 		
 	};
     
     /// //////////////////////////////////////
-var consumerKey    = "t8x1RdghpS6YXyei7uSJNI780";
-var consumerSecret = "ZmHo6mX7JqeyNWHnhmxzQqwtW6rGsK4RmlWcfAxHz7L74X2KZI";
-var accessToken    = "1565485579-W0B9aW5Rx6Y3pDvPa0QaydjDw8rvTQgU9k2d4wi";
-var tokenSecret    = "Yk9TPmVm29l9wz459boL2Wyd5cWC21OUuTGl9WCWeKsHd";
+var consumerKey    = "lzlTPj1DnVlnQOcjlNv2DyuDW";
+var consumerSecret = "YxKn3DnnzpbvamxSmA2OdKvyZNHLFmtaePGILbHcTPf3lGhFp3";
+var accessToken    = "1336173277-CLha4fJRKOyjwlfXyHPKGmyCpSIMzSokHIyKAjn";
+var tokenSecret    = "v2Dw2kkhAaRjkryKgI4hWPy5Onnkj3FvjV3eaumAmPKrW";    
 var name1, name2, name3, name4;
 var imgsrc = new Array(4);
 var id = new Array(4);
@@ -113,9 +161,24 @@ var count = 4; // 表示する件数
     
 ///////////////////////////////////////////////
 
-//objのcommentsに要素を追加する関数
-function commentPush(comment){
-    obj.comments.push(comment);
+//obj1のcommentsに要素を追加する関数
+function commentPush1(comment){
+    obj1.comments.push(comment);
+}
+    
+//obj2のcommentsに要素を追加する関数
+function commentPush2(comment){
+    obj2.comments.push(comment);
+}
+    
+//obj3のcommentsに要素を追加する関数
+function commentPush3(comment){
+    obj3.comments.push(comment);
+}
+    
+//obj4のcommentsに要素を追加する関数
+function commentPush4(comment){
+    obj4.comments.push(comment);
 }
     
 // Twitter APIを使用してフォローのうちの4人のIDを取得する部分
@@ -460,10 +523,10 @@ function startTwitter(account){
          $(".box3").append('<img src="' + imgsrc[2] + '"id = "src3"/>' + '<p>名前:' + name3 + ' ID:' + id[2] + ' friends:' + friends_count[2] + ' followers:' + followers_count[2] + ' tweet数:' + tweetNum[2] + ' tweet内容:' + text3[0] + '</p>');
          $(".box4").append('<img src="' + imgsrc[3] + '"id = "src4"/>' + '<p>名前:' + name4 + ' ID:' + id[3] + ' friends:' + friends_count[3] + ' followers:' + followers_count[3] + ' tweet数:' + tweetNum[3] + ' tweet内容:' + text4[0] + '</p>');
          for(var i=0;i<50;i++){
-             commentPush(text1[i]);
-             commentPush(text2[i]);
-             commentPush(text3[i]);
-             commentPush(text4[i]);
+             commentPush1(text1[i]);
+             commentPush2(text2[i]);
+             commentPush3(text3[i]);
+             commentPush4(text4[i]);
          }
      });
  }
@@ -600,8 +663,9 @@ var alien_down=[0,1,3];
 	//キー操作イベントの設定 addEventListener(イベント, 処理, true or false)
 	//true or false: イベントの優先順位
 	window.addEventListener ('keydown' , keydownfunc , false);
-    nicoscreen.set(obj);
+    nicoscreen.set(obj1);
     nicoscreen.start();
+    nicoscreen.add(obj2.commtents);
 	}
 	
 	//再描画のメソッド

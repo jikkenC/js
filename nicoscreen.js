@@ -29,7 +29,10 @@ r9.NicoScreen = {
 	
 	env : {
 		objID:1,
-		color:"white",
+		color1:"yellow",
+        color2:"blue",
+        color3:"red",
+        color4:"green",
 		interval:500,
 		speed:6500,
 		font_size:"24px",
@@ -49,9 +52,9 @@ r9.NicoScreen = {
         
 		this.comments = o.comments;
 		
-		if(o.base.color){
+		/*if(o.base.color){
 			this.env.color = o.base.color;
-		}
+		}*/
 		
 		if(o.base.loop){
 			this.env.loop = o.base.loop;
@@ -144,11 +147,11 @@ r9.NicoScreen = {
         if(n.env.objID == 1){
             var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
         } else if(n.env.objID == 2){
-            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color2+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
         } else if(n.env.objId == 3){
-            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color3+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
         } else if(n.env.objID == 4){
-            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color4+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
         }
 		
 		$("#nicoscreen").append(com_obj);
