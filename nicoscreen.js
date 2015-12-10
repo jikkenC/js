@@ -28,7 +28,7 @@ r9.NicoScreen = {
 	
 	
 	env : {
-		
+		objID:1,
 		color:"white",
 		interval:500,
 		speed:6500,
@@ -45,7 +45,8 @@ r9.NicoScreen = {
 	comments:[],
 	
 	set:function(o){
-		
+		this.env.objID = o.base.objID;
+        
 		this.comments = o.comments;
 		
 		if(o.base.color){
@@ -140,7 +141,15 @@ r9.NicoScreen = {
 		var end_left = (parseInt(n.env.width)) * -1;
 		
 		var cmid = "cm" + i + "";
-		var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-index:99999;cursor:default'>" + comment_str + "</div>");
+        if(n.env.objID == 1){
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+        } else if(n.env.objID == 2){
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+        } else if(n.env.objId == 3){
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+        } else if(n.env.objID == 4){
+            var com_obj = $("<div id='" + cmid + "' style='left:" + n.env.width + "px; position:absolute;top:" + n.top_pos + "px;color:"+n.env.color1+";font-size:"+n.env.font_size+";font-weight:bold;text-shadow: black 1px 1px 1px;width:100%;z-  index:99999;cursor:default'>" + comment_str + "</div>");
+        }
 		
 		$("#nicoscreen").append(com_obj);
 		
